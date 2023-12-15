@@ -3,3 +3,4 @@
 ## Technologies
 - Spring Boot
 - MySQL
+- Java 17
