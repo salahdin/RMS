@@ -1,1 +1,5 @@
-# cs544-rms
+# Resort Management System
+
+## Technologies
+- Spring Boot
+- MySQL
