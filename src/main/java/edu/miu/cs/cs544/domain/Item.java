@@ -30,5 +30,12 @@ public class Item {
 
 	@Embedded
 	private AuditData auditData;
-	
+
+	public Item(Integer occupants, LocalDate checkinDate, LocalDate checkoutDate, Product product, AuditData auditData) {
+		this.occupants = occupants;
+		this.checkinDate = checkinDate;
+		this.checkoutDate = checkoutDate;
+		this.product = product;
+		this.auditData = auditData;
+	}
 }

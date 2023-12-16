@@ -1,6 +1,5 @@
 package edu.miu.cs.cs544.domain;
 
 public enum UserType {
-    Admin,
-    Client
+    ADMIN, CLIENT;
 }

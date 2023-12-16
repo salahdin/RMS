@@ -5,8 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor
 @Data
+@NoArgsConstructor
 public class State {
 
 	@Id
@@ -23,4 +23,10 @@ public class State {
 	@ManyToOne
 	private Country country;
 
+	public State(String code, String name, AuditData auditData, Country country) {
+		this.code = code;
+		this.name = name;
+		this.auditData = auditData;
+		this.country = country;
+	}
 }

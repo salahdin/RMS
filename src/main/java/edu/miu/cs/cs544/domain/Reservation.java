@@ -7,8 +7,8 @@ import lombok.Data;
 import lombok.Generated;
 import lombok.NoArgsConstructor;
 
-@Data
 @Entity
+@Data
 @NoArgsConstructor
 public class Reservation {
 
@@ -24,5 +24,9 @@ public class Reservation {
 
 	@Embedded
 	private AuditData auditData;
-	
+
+	public Reservation(Customer customer, AuditData auditData) {
+		this.customer = customer;
+		this.auditData = auditData;
+	}
 }
