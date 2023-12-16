@@ -4,10 +4,12 @@ import edu.miu.cs.cs544.domain.Customer;
 import edu.miu.cs.cs544.domain.User;
 import edu.miu.cs.cs544.dto.CustomerDTO;
 import edu.miu.cs.cs544.dto.UserDTO;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class UserAdapter {
     public UserDTO entityToDTO(User user){
         return new UserDTO(user.getUserName(), user.getUserPass(), user.getActive(), user.getUserType());
@@ -23,5 +25,4 @@ public class UserAdapter {
     public List<User> DtoToEntityAll(List<UserDTO> userDTOs){
         return userDTOs.stream().map(userDTO -> DtoToEntity(userDTO)).collect(Collectors.toList());
     }
-
 }

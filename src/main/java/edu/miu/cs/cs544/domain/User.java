@@ -1,5 +1,6 @@
 package edu.miu.cs.cs544.domain;
 
+import edu.miu.cs.cs544.domain.enums.UserType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,7 +11,7 @@ import lombok.*;
 public class User {
 
 	@Id
-	@Generated
+	@GeneratedValue
 	private Integer id;
 	
 	private String userName;
@@ -31,5 +32,12 @@ public class User {
 		this.active = active;
 		this.userType = userType;
 		this.auditData = auditData;
+	}
+
+	public User(String userName, String userPass, Boolean active, UserType userType) {
+		this.userName = userName;
+		this.userPass = userPass;
+		this.active = active;
+		this.userType = userType;
 	}
 }

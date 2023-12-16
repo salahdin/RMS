@@ -1,6 +1,6 @@
 package edu.miu.cs.cs544.dto;
 
-import edu.miu.cs.cs544.domain.UserType;
+import edu.miu.cs.cs544.domain.enums.UserType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;

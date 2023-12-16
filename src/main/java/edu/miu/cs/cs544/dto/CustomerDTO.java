@@ -22,8 +22,27 @@ public class CustomerDTO {
     private String email;
     //
     List<Reservation> reservations = new ArrayList<>();
-    private User user;
+    private UserDTO userDTO;
     //
     private Address billingAddress;
     private Address physicalAddress;
+
+    public CustomerDTO(String firstName, String lastName, String email, UserDTO userDTO)
+    {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.userDTO = userDTO;
+    }
+
+    public CustomerDTO(String firstName, String lastName,
+                       String email, UserDTO userDTO,
+                       Address billingAddress, Address physicalAddress)
+    {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.userDTO = userDTO;
+    }
 }
+

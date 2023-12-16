@@ -40,13 +40,20 @@ public class Customer {
 	@JoinColumn(name="physical_address_id")
 	private Address physicalAddress;
 
-	public Customer(String firstName, String lastName, String email, AuditData auditData, User user, Address billingAddress, Address physicalAddress) {
+	public Customer(String firstName, String lastName, String email, User user, Address billingAddress, Address physicalAddress) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
-		this.auditData = auditData;
+//		this.auditData = auditData;
 		this.user = user;
 		this.billingAddress = billingAddress;
 		this.physicalAddress = physicalAddress;
+	}
+
+	public Customer(String firstName, String lastName, String email, User user) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.user = user;
 	}
 }
