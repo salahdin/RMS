@@ -8,7 +8,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/cs544-rms?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
     username: root
-    password: P@ssword123
+    password: 090401
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -50,9 +50,3 @@ logging:
 #    web:
 #      exposure:
 #        include: health,beans,mappings
-
-# Enable Swagger UI
-springfox:
-  documentation:
-    swagger-ui:
-      enabled: true
