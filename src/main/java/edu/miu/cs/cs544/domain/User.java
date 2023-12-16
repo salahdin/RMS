@@ -27,4 +27,7 @@ public class User {
 	@Embedded
 	private AuditData auditData;
 
+	public User(String userName, String userPass, Boolean active, UserType userType) {
+
+	}
 }
