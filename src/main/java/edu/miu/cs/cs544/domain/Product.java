@@ -5,8 +5,8 @@ import lombok.Data;
 import lombok.Generated;
 import lombok.NoArgsConstructor;
 
-@Data
 @Entity
+@Data
 @NoArgsConstructor
 public class Product {
 
@@ -25,5 +25,12 @@ public class Product {
 
 	@Embedded
 	private AuditData auditData;
-	
+
+	public Product(String name, String description, String excerpt, ProductType type, AuditData auditData) {
+		this.name = name;
+		this.description = description;
+		this.excerpt = excerpt;
+		this.type = type;
+		this.auditData = auditData;
+	}
 }

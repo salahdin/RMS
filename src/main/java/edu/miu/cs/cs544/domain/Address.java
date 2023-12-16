@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@NoArgsConstructor
 @Data
+@NoArgsConstructor
 public class Address {
 
 	@Id
@@ -20,7 +20,6 @@ public class Address {
 	
 	private String postalCode;
 
-
 	@Enumerated(EnumType.STRING)
 	private AddressType addressType;
 
@@ -29,5 +28,14 @@ public class Address {
 
 	@ManyToOne
 	private State state;
-	
+
+	public Address(String line1, String line2, String city, String postalCode, AddressType addressType, AuditData auditData, State state) {
+		this.line1 = line1;
+		this.line2 = line2;
+		this.city = city;
+		this.postalCode = postalCode;
+		this.addressType = addressType;
+		this.auditData = auditData;
+		this.state = state;
+	}
 }

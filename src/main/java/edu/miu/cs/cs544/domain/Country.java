@@ -8,11 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@NoArgsConstructor
 @Data
+@NoArgsConstructor
 public class Country {
-	
+
 	@Id
+	@GeneratedValue
+	private Long id;
+
 	private String code;
 	
 	private String name;
@@ -24,5 +27,12 @@ public class Country {
 
 	@Embedded
 	private AuditData auditData;
-	
+
+	public Country(String code, String name, Integer population, List<State> states, AuditData auditData) {
+		this.code = code;
+		this.name = name;
+		this.population = population;
+		this.states = states;
+		this.auditData = auditData;
+	}
 }

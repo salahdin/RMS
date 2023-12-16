@@ -6,8 +6,6 @@ import lombok.*;
 
 @Entity
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
 public class User {
 
@@ -27,4 +25,11 @@ public class User {
 	@Embedded
 	private AuditData auditData;
 
+	public User(String userName, String userPass, Boolean active, UserType userType, AuditData auditData) {
+		this.userName = userName;
+		this.userPass = userPass;
+		this.active = active;
+		this.userType = userType;
+		this.auditData = auditData;
+	}
 }
