@@ -1,4 +1,4 @@
-package edu.miu.cs.cs544.domain;
+package edu.miu.cs.cs544.domain.enums;
 
 import jakarta.persistence.Enumerated;
 
