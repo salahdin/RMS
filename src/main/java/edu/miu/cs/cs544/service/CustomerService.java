@@ -7,10 +7,14 @@ import java.util.List;
 
 public interface CustomerService {
     CustomerDTO addCustomer(CustomerDTO customerDTO);
+
     CustomerDTO getCustomerByEmail(String email);
 
     List<CustomerDTO> getCustomerByFirstName(String firstName);
 
     List<CustomerDTO> getCustomerByLastName(String lastName);
 
+    CustomerDTO updateCustomerByEmail(CustomerDTO customerDTO);
+
+    String deleteCustomerByEmail(String email);
 }

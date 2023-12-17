@@ -26,3 +26,4 @@ replay_pid*
 target/
 .mvn/
 app.log.2023-12-15.0.gz
+app.log.2023-12-16.0.gz

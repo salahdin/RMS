@@ -45,5 +45,16 @@ public class CustomerController {
     }
 
     // more to implement: update name(s) / addresses
+    @PutMapping("/email/{email}")
+    public ResponseEntity<?> updateCustomerByEmail(@Valid  @RequestBody CustomerDTO customerDTO){
+        var result = customerService.updateCustomerByEmail(customerDTO);
+        return new ResponseEntity<CustomerDTO>(result, HttpStatus.OK );
+        //
+    }
 
+    @DeleteMapping("/email/{email}")
+    public ResponseEntity<?> deactivateCustomerByEmail(@PathVariable("email") String email){
+        var result = customerService.deleteCustomerByEmail(email);
+        return new ResponseEntity<String>(result, HttpStatus.OK);
+    }
 }
