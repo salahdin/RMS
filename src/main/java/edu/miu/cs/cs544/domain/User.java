@@ -13,7 +13,8 @@ public class User {
 	@Id
 	@GeneratedValue
 	private Integer id;
-	
+
+	@Column(unique=true)
 	private String userName;
 	
 	private String userPass;

@@ -13,6 +13,7 @@ public class State {
 	@GeneratedValue
 	private Integer id;
 
+	@Column(unique=true)
 	private String code;
 	
 	private String name;
@@ -26,6 +27,7 @@ public class State {
 	public State(String code, String name, AuditData auditData, Country country) {
 		this.code = code;
 		this.name = name;
+		//
 		this.auditData = auditData;
 		this.country = country;
 	}
