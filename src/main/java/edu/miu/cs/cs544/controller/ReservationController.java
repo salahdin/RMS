@@ -1,7 +1,7 @@
 package edu.miu.cs.cs544.controller;
 
 
-import edu.miu.cs.cs544.domain.Reservation;
+import edu.miu.cs.cs544.dto.ReservationDTO;
 import edu.miu.cs.cs544.dto.ResponseDto;
 import edu.miu.cs.cs544.repository.ReservationRepository;
 import edu.miu.cs.cs544.service.ReservationService;
@@ -38,10 +38,13 @@ public class ReservationController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> createReservation(@RequestBody Reservation reservation) {
-        //TODO: check if product exists
-        ResponseDto createdReservation = reservationService.createReservation(reservation);
-        return new ResponseEntity<>(createdReservation, HttpStatus.CREATED);
+    public ResponseEntity<?> createReservation(@RequestBody ReservationDTO reservationDTO) {
+        try {
+            ResponseDto createdReservation = reservationService.createReservation(reservationDTO);
+            return new ResponseEntity<>(createdReservation, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
 
