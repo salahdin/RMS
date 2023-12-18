@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.List;
 
 @Service
 public class ReservationService {
@@ -64,6 +65,7 @@ public class ReservationService {
 
             Item item = itemAdaptor.DtoToEntity(itemDTO);
             item.setProduct(productOptional.get());
+            item.setReservation(reservation);
             itemRepository.save(item);
             reservation.addItem(item);
         }
@@ -73,12 +75,23 @@ public class ReservationService {
         return ResponseDto.builder()
                 .success(true)
                 .message("Reservation created successfully")
-                .data(reservation)
+                .data(reservationDTO)
                 .build();
     }
 
     public void addItemToReservation(Integer reservationId, Item item) {
         Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() -> new IllegalArgumentException("Invalid reservation id"));
         reservation.getItems().add(item);
+    }
+
+    //TODO: refactor
+    public ResponseDto getAllReservations(){
+        List<Reservation> reservations = reservationRepository.findAll();
+
+        return ResponseDto.builder()
+                .success(true)
+                .message("Reservation fetched successfully")
+                .data(reservations.stream().map(x-> reservationAdapter.entityToDTO(x)))
+                .build();
     }
 }
