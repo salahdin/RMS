@@ -32,4 +32,11 @@ public class CountryDTO {
         this.population = population;
         this.states = states;
     }
+
+    public CountryDTO(Long id, String code, String name, Integer population) {
+        this.id = id;
+        this.code = code;
+        this.name = name;
+        this.population = population;
+    }
 }

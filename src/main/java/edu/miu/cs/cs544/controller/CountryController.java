@@ -1,5 +1,6 @@
 package edu.miu.cs.cs544.controller;
 
+import edu.miu.cs.cs544.domain.Country;
 import edu.miu.cs.cs544.dto.CountryDTO;
 import edu.miu.cs.cs544.service.CountryService;
 
@@ -24,9 +25,14 @@ public class CountryController {
     private CountryService countryService;
 
     @PostMapping
-    public ResponseEntity<?> addCountry(CountryDTO countryDTO){
-        return new ResponseEntity<CountryDTO>(countryService.addCountry(countryDTO), HttpStatus.OK);
+    public ResponseEntity<?> addCountry(@RequestBody Country country){
+        return new ResponseEntity<Country>(countryService.addCountry(country), HttpStatus.OK);
     }
+
+//    @PostMapping
+//    public ResponseEntity<?> addCountry(CountryDTO countryDTO){
+//        return new ResponseEntity<CountryDTO>(countryService.addCountry(countryDTO), HttpStatus.OK);
+//    }
     @GetMapping
     public ResponseEntity<?> getAllCountries(){
         return new ResponseEntity<List<CountryDTO>>( countryService.findAllCountries(), HttpStatus.OK);
