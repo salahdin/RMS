@@ -11,7 +11,7 @@ import lombok.*;
 public class User {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	
 	private String userName;
@@ -25,14 +25,6 @@ public class User {
 
 	@Embedded
 	private AuditData auditData = new AuditData();
-
-	public User(String userName, String userPass, Boolean active, UserType userType, AuditData auditData) {
-		this.userName = userName;
-		this.userPass = userPass;
-		this.active = active;
-		this.userType = userType;
-		this.auditData = auditData;
-	}
 
 	public User(String userName, String userPass, Boolean active, UserType userType) {
 		this.userName = userName;

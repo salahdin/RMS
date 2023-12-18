@@ -28,11 +28,27 @@ public class Country {
 	@Embedded
 	private AuditData auditData = new AuditData();
 
-	public Country(String code, String name, Integer population, List<State> states, AuditData auditData) {
+	public Country(Long id, String code, String name, Integer population, List<State> states, AuditData auditData) {
+		this.id = id;
 		this.code = code;
 		this.name = name;
 		this.population = population;
 		this.states = states;
 		this.auditData = auditData;
+	}
+
+	public Country(Long id, String code, String name, Integer population, List<State> states) {
+		this.id = id;
+		this.code = code;
+		this.name = name;
+		this.population = population;
+		this.states = states;
+	}
+
+	public Country(Long id, String code, String name, Integer population) {
+		this.id = id;
+		this.code = code;
+		this.name = name;
+		this.population = population;
 	}
 }
