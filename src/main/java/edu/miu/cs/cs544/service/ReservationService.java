@@ -2,21 +2,17 @@ package edu.miu.cs.cs544.service;
 
 import edu.miu.cs.cs544.adapter.ItemAdaptor;
 import edu.miu.cs.cs544.adapter.ReservationAdapter;
-import edu.miu.cs.cs544.domain.Customer;
-import edu.miu.cs.cs544.domain.Item;
-import edu.miu.cs.cs544.domain.Product;
-import edu.miu.cs.cs544.domain.Reservation;
+import edu.miu.cs.cs544.domain.*;
 import edu.miu.cs.cs544.domain.enums.ReservationState;
-import edu.miu.cs.cs544.dto.ItemDTO;
-import edu.miu.cs.cs544.dto.ReservationDTO;
-import edu.miu.cs.cs544.dto.ResponseDto;
+import edu.miu.cs.cs544.dto.*;
 import edu.miu.cs.cs544.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ReservationService {
@@ -28,7 +24,7 @@ public class ReservationService {
     private ReservationAdapter reservationAdapter;
 
     @Autowired
-    private ProductRepository productRepository;
+    private ProductService productService;
 
     @Autowired
     private ItemAdaptor itemAdaptor;
@@ -56,25 +52,18 @@ public class ReservationService {
 
     @Transactional
     public ResponseDto createReservation(ReservationDTO reservationDTO){
-        Optional<Customer> customerOptional = customerRepository.findCustomerByEmail(reservationDTO.getCustomer().getEmail());
-        if (!customerOptional.isPresent()) {
-            throw new IllegalArgumentException("Customer does not exist");
-        }
+        Customer customer = validateCustomer(reservationDTO.getCustomer().getEmail());
 
         Reservation reservation = new Reservation();
-        Customer customer = customerOptional.get();
         reservation.setCustomer(customer);
         reservation.setReservationState(ReservationState.NEW);
 
         for (ItemDTO itemDTO : reservationDTO.getItems()) {
-            // Check if product exists
-            Optional<Product> productOptional = productRepository.findById(itemDTO.getProduct().getId());
-            if (!productOptional.isPresent()) {
-                throw new IllegalArgumentException("Product does not exist");
-            }
+            Product product = validateProduct(itemDTO.getProduct().getId());
+            validateProductAvailability(product.getId(), itemDTO.getCheckinDate(), itemDTO.getCheckoutDate());
 
             Item item = itemAdaptor.DtoToEntity(itemDTO);
-            item.setProduct(productOptional.get());
+            item.setProduct(product);
             item.setReservation(reservation);
             itemRepository.save(item);
             reservation.addItem(item);
@@ -104,4 +93,31 @@ public class ReservationService {
                 .data(reservations.stream().map(x-> reservationAdapter.entityToDTO(x)))
                 .build();
     }
+
+    public boolean isProductReservedDuringStay(Integer productId, String checkinDate, String checkoutDate) {
+        LocalDate checkin = LocalDate.parse(checkinDate);
+        LocalDate checkout = LocalDate.parse(checkoutDate);
+        List<Reservation> reservations = reservationRepository.findReservationsByProductAndDates(productId, checkin, checkout);
+        return !reservations.isEmpty();
+    }
+
+    private Customer validateCustomer(String email) {
+        return customerRepository.findCustomerByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Customer does not exist"));
+    }
+
+private Product validateProduct(Integer productId) {
+    Product product = productService.getProductById(productId);
+    if (product==null) {
+        throw new IllegalArgumentException("Product does not exist");
+    }
+    return product;
+}
+
+    private void validateProductAvailability(Integer productId, String checkinDate, String checkoutDate) {
+        if(isProductReservedDuringStay(productId, checkinDate, checkoutDate)){
+            throw new IllegalArgumentException("Product is already reserved on this date");
+        }
+    }
+
 }

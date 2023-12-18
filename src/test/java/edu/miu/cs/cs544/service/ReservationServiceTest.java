@@ -48,8 +48,8 @@ class ReservationServiceTest {
     private CustomerRepository customerRepository;
 
     @Test
-    void updateReservation() {
-
+    void updateReservation_validReservationDetails_reservationUpdated() {
+        // Arrange
         Customer customer = new Customer();
         customer.setId(1);
         customer.setEmail("test@gmail.com");
@@ -57,20 +57,23 @@ class ReservationServiceTest {
         ReservationDTO reservationDTO = new ReservationDTO();
         reservationDTO.setId(1);
         //reservationDTO.setCustomer(customer);
-        reservationDTO.setItems(null);
-
 
         Reservation reservation = new Reservation();
         reservation.setId(1);
         reservation.setCustomer(customer);
-        reservation.setItems(null);
+
 
         when(reservationRepository.findById(reservationDTO.getId())).thenReturn(Optional.of(reservation));
         when(reservationAdapter.DtoToEntity(reservationDTO)).thenReturn(reservation);
-        when(customerRepository.findCustomerByEmail(reservationDTO.getCustomer().getEmail())).thenReturn(Optional.of(customer));
+        when(reservationRepository.save(reservation)).thenReturn(reservation);
 
+        // Act
         ResponseDto responseDto = reservationService.updateReservation(reservationDTO);
+
+        // Assert
         assertTrue(responseDto.isSuccess());
+        assertEquals("Reservation updated successfully", responseDto.getMessage());
+        assertEquals(reservationDTO, responseDto.getData());
     }
 
     @Test
