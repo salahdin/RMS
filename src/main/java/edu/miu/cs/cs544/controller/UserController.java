@@ -46,8 +46,6 @@ public class UserController {
         } else {
             throw new UsernameNotFoundException("User not found!");
         }
-
-
     }
 
     @PostMapping("/add")
