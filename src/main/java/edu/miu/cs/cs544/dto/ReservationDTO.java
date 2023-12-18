@@ -1,5 +1,6 @@
 package edu.miu.cs.cs544.dto;
 
+import edu.miu.cs.cs544.domain.Customer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
