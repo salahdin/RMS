@@ -29,11 +29,12 @@ public class ReservationController {
 
     @GetMapping()
     public ResponseEntity<?> getAllReservations() {
-        return ResponseEntity.ok().body(reservationRepository.findAll());
+        return ResponseEntity.ok().body(reservationService.getAllReservations());
     }
 
     @GetMapping("/customer/{customerId}")
     public ResponseEntity<?> getAllReservationsByCustomerId(@PathVariable Integer customerId) {
+
         return ResponseEntity.ok().body(reservationRepository.findAllByCustomerId(customerId));
     }
 
