@@ -1,6 +1,7 @@
 package edu.miu.cs.cs544.controller;
 
 import edu.miu.cs.cs544.dto.CustomerDTO;
+import edu.miu.cs.cs544.dto.ResponseDto;
 import edu.miu.cs.cs544.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,7 @@ public class CustomerController {
     public ResponseEntity<?> getCustomerByEmail(@PathVariable("email") String email){
         return new ResponseEntity<CustomerDTO>(
                 customerService.getCustomerByEmail(email)
-                , HttpStatus.OK);
+                ,HttpStatus.OK);
     }
 
     @GetMapping("/firstname/{firstname}")
@@ -54,7 +55,12 @@ public class CustomerController {
 
     @DeleteMapping("/email/{email}")
     public ResponseEntity<?> deactivateCustomerByEmail(@PathVariable("email") String email){
+        var customer = customerService.getCustomerByEmail(email);
+        if(customer == null)
+        {
+            return new ResponseEntity<ResponseDto>(new ResponseDto(false, "Customer with email = " + email + " is not available", null), HttpStatus.NOT_FOUND);
+        }
         var result = customerService.deleteCustomerByEmail(email);
-        return new ResponseEntity<String>(result, HttpStatus.OK);
+        return new ResponseEntity<String>(result, HttpStatus.NO_CONTENT);
     }
 }
