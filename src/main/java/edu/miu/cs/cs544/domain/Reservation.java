@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class Reservation {
 
 	@Id
-	@Generated
+	@GeneratedValue
 	private Integer id;
 
 	@ManyToOne
