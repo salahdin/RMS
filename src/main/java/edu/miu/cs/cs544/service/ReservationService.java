@@ -39,9 +39,19 @@ public class ReservationService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    public Reservation updateReservation(Reservation reservation) {
-        //TODO: Add logic to update reservation
-        return reservationRepository.save(reservation);
+    public ResponseDto updateReservation(ReservationDTO reservationDTO) {
+        Optional<Reservation> reservationOptional = reservationRepository.findById(reservationDTO.getId());
+        if (!reservationOptional.isPresent()) {
+            throw new IllegalArgumentException("Reservation does not exist");
+        }
+
+        Reservation reservation = reservationAdapter.DtoToEntity(reservationDTO);
+        reservationRepository.save(reservation);
+        return ResponseDto.builder()
+                .success(true)
+                .message("Reservation updated successfully")
+                .data(reservationDTO)
+                .build();
     }
 
     @Transactional
