@@ -1,5 +1,6 @@
 package edu.miu.cs.cs544.security;
 
+import edu.miu.cs.cs544.domain.UserType;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -42,8 +43,9 @@ public class SecurityConfig {
                                 "/users/add",
                                 "/users/ping"
                         ).permitAll()
-//                        .requestMatchers("/users/admin").hasAuthority("ADMIN")
-//                        .requestMatchers("/users/client").hasAnyAuthority("ADMIN","CLIENT")
+//                        .requestMatchers("/users/admin").hasAuthority(UserType.ADMIN.getType())
+//                        .requestMatchers("/users/client")
+//                            .hasAnyAuthority(UserType.ADMIN.getType(), UserType.CLIENT.getType())
                         .requestMatchers("/users/**").authenticated()
                 )
                 .sessionManagement(config -> {
