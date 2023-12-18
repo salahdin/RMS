@@ -2,8 +2,10 @@ package edu.miu.cs.cs544.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractAuthenticationFilterConfigurer;
@@ -27,9 +29,15 @@ public class SecurityConfig {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable) // TODO: find alternative, as it has some problem with bearer token
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/users/ping", "/users/add").permitAll()
+                        .requestMatchers(
+                                "/users/authenticate",
+                                "/users/add",
+                                "/users/ping"
+                        ).permitAll()
                         .requestMatchers("/users/admin").hasAuthority("ADMIN")
                         .requestMatchers("/users/client").hasAuthority("CLIENT")
+                        .requestMatchers("/users/**").authenticated()
+
                 )
                 .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
 //                .rememberMe(Customizer.withDefaults())
@@ -47,5 +55,10 @@ public class SecurityConfig {
         authenticationProvider.setUserDetailsService(userDetailsService());
         authenticationProvider.setPasswordEncoder(passwordEncoder());
         return authenticationProvider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 }
