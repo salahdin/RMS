@@ -10,7 +10,7 @@ import lombok.*;
 public class User {
 
 	@Id
-	@Generated
+	@GeneratedValue
 	private Integer id;
 	
 	private String userName;

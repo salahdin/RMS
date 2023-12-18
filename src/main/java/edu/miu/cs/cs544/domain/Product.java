@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class Product {
 
 	@Id
-	@Generated
+	@GeneratedValue
 	private Integer id;
 	
 	private String name; 
