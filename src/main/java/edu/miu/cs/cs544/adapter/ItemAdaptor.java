@@ -14,7 +14,6 @@ public class ItemAdaptor {
 
     public ItemDTO entityToDTO(Item item){
         ItemDTO itemDTO = new ItemDTO();
-        itemDTO.setId(item.getId());
         itemDTO.setCheckinDate(item.getCheckinDate().toString());
         itemDTO.setCheckoutDate(item.getCheckoutDate().toString());
         itemDTO.setOccupants(item.getOccupants());
@@ -26,7 +25,6 @@ public class ItemAdaptor {
 
     public Item DtoToEntity(ItemDTO itemDTO){
         Item item = new Item();
-        item.setId(itemDTO.getId());
         //TODO: add products
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
