@@ -26,11 +26,15 @@ public class Reservation {
 	@Embedded
 	private AuditData auditData;
 
+	@Enumerated
+	public ReservationState reservationState;
+
 	public Reservation(Customer customer, AuditData auditData) {
 		this.customer = customer;
 		this.auditData = auditData;
 	}
+	public void addItem(Item item){
+		items.add(item);
+	}
 
-	@Enumerated
-	public ReservationState reservationState;
 }
