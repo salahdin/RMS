@@ -29,7 +29,7 @@ public class Item {
 	private Product product;
 
 	@Embedded
-	private AuditData auditData;
+	private AuditData auditData = new AuditData();
 
 	public Item(Integer occupants, LocalDate checkinDate, LocalDate checkoutDate, Product product, AuditData auditData) {
 		this.occupants = occupants;

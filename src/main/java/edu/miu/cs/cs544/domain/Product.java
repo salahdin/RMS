@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class Product {
 
 	@Id
-	@Generated
+	@GeneratedValue
 	private Integer id;
 	
 	private String name; 
@@ -25,7 +25,7 @@ public class Product {
 	private ProductType type;
 
 	@Embedded
-	private AuditData auditData;
+	private AuditData auditData = new AuditData();
 
 	public Product(String name, String description, String excerpt, ProductType type, AuditData auditData) {
 		this.name = name;

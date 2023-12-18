@@ -26,7 +26,7 @@ public class Country {
 	private List<State> states = new ArrayList<>() ;
 
 	@Embedded
-	private AuditData auditData;
+	private AuditData auditData = new AuditData();
 
 	public Country(String code, String name, Integer population, List<State> states, AuditData auditData) {
 		this.code = code;

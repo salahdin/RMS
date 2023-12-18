@@ -24,7 +24,7 @@ public class User {
 	private UserType userType;
 
 	@Embedded
-	private AuditData auditData;
+	private AuditData auditData = new AuditData();
 
 	public User(String userName, String userPass, Boolean active, UserType userType, AuditData auditData) {
 		this.userName = userName;
