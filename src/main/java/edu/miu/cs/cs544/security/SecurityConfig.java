@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -20,6 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Autowired
@@ -40,8 +42,8 @@ public class SecurityConfig {
                                 "/users/add",
                                 "/users/ping"
                         ).permitAll()
-                        .requestMatchers("/users/admin").hasAuthority("ADMIN")
-                        .requestMatchers("/users/client").hasAuthority("CLIENT")
+//                        .requestMatchers("/users/admin").hasAuthority("ADMIN")
+//                        .requestMatchers("/users/client").hasAnyAuthority("ADMIN","CLIENT")
                         .requestMatchers("/users/**").authenticated()
                 )
                 .sessionManagement(config -> {

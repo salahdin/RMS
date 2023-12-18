@@ -26,7 +26,6 @@ public class UserController {
     PasswordEncoder passwordEncoder;
     @Autowired
     private JwtService jwtService;
-
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -64,6 +63,7 @@ public class UserController {
     }
 
     @GetMapping("/admin")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ResponseDto> admin() {
         return new ResponseEntity<>(
                 new ResponseDto(true, "I know you are an admin", null),
@@ -72,14 +72,12 @@ public class UserController {
     }
 
     @GetMapping("/client")
+    @PreAuthorize("hasAnyAuthority('ADMIN','CLIENT')")
     public ResponseEntity<ResponseDto> client() {
         return new ResponseEntity<>(
                 new ResponseDto(true, "I know you are a client", null),
                 HttpStatus.OK
         );
     }
-
-
-
 
 }
