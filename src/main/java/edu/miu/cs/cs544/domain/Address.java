@@ -1,5 +1,6 @@
 package edu.miu.cs.cs544.domain;
 
+import edu.miu.cs.cs544.domain.enums.AddressType;
 import jakarta.persistence.*;
 import lombok.*;
 

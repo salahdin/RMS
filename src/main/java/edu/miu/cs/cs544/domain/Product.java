@@ -1,5 +1,6 @@
 package edu.miu.cs.cs544.domain;
 
+import edu.miu.cs.cs544.domain.enums.ProductType;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Generated;

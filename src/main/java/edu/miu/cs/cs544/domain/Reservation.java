@@ -2,6 +2,7 @@ package edu.miu.cs.cs544.domain;
 
 import java.util.List;
 
+import edu.miu.cs.cs544.domain.enums.ReservationState;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Generated;
@@ -29,4 +30,7 @@ public class Reservation {
 		this.customer = customer;
 		this.auditData = auditData;
 	}
+
+	@Enumerated
+	public ReservationState reservationState;
 }
