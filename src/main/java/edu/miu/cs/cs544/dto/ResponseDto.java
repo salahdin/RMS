@@ -12,7 +12,6 @@ public class ResponseDto {
     private boolean success;
     private String message;
 
-    private HttpStatus status;
 
     private Object data;
 }
