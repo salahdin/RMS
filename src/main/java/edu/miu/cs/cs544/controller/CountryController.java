@@ -24,23 +24,23 @@ public class CountryController {
     private CountryService countryService;
 
     @PostMapping
-    public ResponseEntity<?> addLocation(CountryDTO locationDTO){
-        return new ResponseEntity<CountryDTO>(countryService.addCountry(locationDTO), HttpStatus.OK);
+    public ResponseEntity<?> addCountry(CountryDTO countryDTO){
+        return new ResponseEntity<CountryDTO>(countryService.addCountry(countryDTO), HttpStatus.OK);
     }
     @GetMapping
-    public ResponseEntity<?> getAllLocation(){
+    public ResponseEntity<?> getAllCountries(){
         return new ResponseEntity<List<CountryDTO>>( countryService.findAllCountries(), HttpStatus.OK);
     }
     @GetMapping("/{country_id}")
-    public ResponseEntity<?> getLocation(@PathVariable Long country_id){
+    public ResponseEntity<?> getCountry(@PathVariable Long country_id){
         return new ResponseEntity<CountryDTO>(countryService.findById(country_id), HttpStatus.OK);
     }
     @PutMapping
-    public ResponseEntity<?> updateLocation(@Valid @RequestBody CountryDTO locationDTO){
-        return new ResponseEntity<CountryDTO>(countryService.updateCountry(locationDTO), HttpStatus.OK);
+    public ResponseEntity<?> updateCountry(@Valid @RequestBody CountryDTO countryDTO){
+        return new ResponseEntity<CountryDTO>(countryService.updateCountry(countryDTO), HttpStatus.OK);
     }
     @DeleteMapping("/{country_id}")
-    public ResponseEntity<?> deleteLocation(@PathVariable Long location_id){
-        return new ResponseEntity<String>(countryService.deleteById(location_id), HttpStatus.OK);
+    public ResponseEntity<?> deleteCountry(@PathVariable Long country_id){
+        return new ResponseEntity<String>(countryService.deleteById(country_id), HttpStatus.OK);
     }
 }

@@ -28,10 +28,10 @@ public class CountryServiceImpl implements CountryService {
     private final CountryRepository countryRepository;
 
     @Override
-    public CountryDTO addCountry(CountryDTO locationDTO) {
+    public CountryDTO addCountry(CountryDTO countryDTO) {
         try {
-            countryRepository.save(countryAdapter.dtoToEntity(locationDTO));
-            return locationDTO;
+            countryRepository.save(countryAdapter.dtoToEntity(countryDTO));
+            return countryDTO;
         }catch (RuntimeException e){
             throw new RuntimeException("Failed to add this country");
         }
@@ -42,9 +42,9 @@ public class CountryServiceImpl implements CountryService {
     }
     @Override
     public CountryDTO findById(Long id) {
-        Optional<Country> locationOptional = countryRepository.findById(id);
-        Country location = locationOptional.orElseThrow(() -> new EntityNotFoundException("Location with id " + id + " not found"));
-        return countryAdapter.entityToDto(location);
+        Optional<Country> countryOptional = countryRepository.findById(id);
+        Country country = countryOptional.orElseThrow(() -> new EntityNotFoundException("Location with id " + id + " not found"));
+        return countryAdapter.entityToDto(country);
     }
     @Override
     public CountryDTO updateCountry(CountryDTO locationDTO) {
@@ -52,14 +52,14 @@ public class CountryServiceImpl implements CountryService {
             countryRepository.save(countryAdapter.dtoToEntity(locationDTO));
             return locationDTO;
         }catch (RuntimeException e){
-            throw new RuntimeException("Failed to update this location");
+            throw new RuntimeException("Failed to update this country");
         }
     }
     @Override
     public String deleteById(Long id) {
         try {
             countryRepository.deleteById(id);
-            return "Location deleted successfully";
+            return "Country deleted successfully";
         }catch (EntityNotFoundException e){
             throw new EntityNotFoundException("Failed to delete this member");
         }

@@ -13,7 +13,7 @@ public class CountryAdapter {
         return new CountryDTO(country.getId(), country.getCode(), country.getName(), country.getPopulation(), country.getStates());
     }
     public List<CountryDTO> entityToDtoAll(List<Country> countries){
-        return countries.stream().map(location -> entityToDto(location)).collect(Collectors.toList());
+        return countries.stream().map(country -> entityToDto(country)).collect(Collectors.toList());
     }
     public Country dtoToEntity(CountryDTO countryDTO){
         return new Country(countryDTO.getId(), countryDTO.getCode(), countryDTO.getName(), countryDTO.getPopulation(), countryDTO.getStates());
