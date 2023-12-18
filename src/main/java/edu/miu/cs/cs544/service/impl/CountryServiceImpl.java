@@ -1,0 +1,68 @@
+package edu.miu.cs.cs544.service.impl;
+
+import edu.miu.cs.cs544.adapter.CountryAdapter;
+import edu.miu.cs.cs544.domain.Country;
+import edu.miu.cs.cs544.dto.CountryDTO;
+import edu.miu.cs.cs544.repository.CountryRepository;
+import edu.miu.cs.cs544.service.CountryService;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class CountryServiceImpl implements CountryService {
+
+    private final CountryAdapter countryAdapter;
+
+    private final CountryRepository countryRepository;
+
+    @Override
+    public CountryDTO addCountry(CountryDTO locationDTO) {
+        try {
+            countryRepository.save(countryAdapter.dtoToEntity(locationDTO));
+            return locationDTO;
+        }catch (RuntimeException e){
+            throw new RuntimeException("Failed to add this country");
+        }
+    }
+    @Override
+    public List<CountryDTO> findAllCountries() {
+        return countryAdapter.entityToDtoAll(countryRepository.findAll());
+    }
+    @Override
+    public CountryDTO findById(Long id) {
+        Optional<Country> locationOptional = countryRepository.findById(id);
+        Country location = locationOptional.orElseThrow(() -> new EntityNotFoundException("Location with id " + id + " not found"));
+        return countryAdapter.entityToDto(location);
+    }
+    @Override
+    public CountryDTO updateCountry(CountryDTO locationDTO) {
+        try {
+            countryRepository.save(countryAdapter.dtoToEntity(locationDTO));
+            return locationDTO;
+        }catch (RuntimeException e){
+            throw new RuntimeException("Failed to update this location");
+        }
+    }
+    @Override
+    public String deleteById(Long id) {
+        try {
+            countryRepository.deleteById(id);
+            return "Location deleted successfully";
+        }catch (EntityNotFoundException e){
+            throw new EntityNotFoundException("Failed to delete this member");
+        }
+    }
+
+}

@@ -1,25 +1,16 @@
 package edu.miu.cs.cs544.service;
 
-import edu.miu.cs.cs544.domain.Country;
-import edu.miu.cs.cs544.repository.CountryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import edu.miu.cs.cs544.dto.CountryDTO;
 
-@Service
-public class CountryService {
-    @Autowired
-    private CountryRepository countryRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-    public Country makeCountry(Country country) {
-        return countryRepository.save(country);
-    }
+import java.util.List;
 
-    public Country updateCountry(Country country) {
-        return countryRepository.save(country);
-    }
-
-    public Country createCountry(Country country) {
-        return countryRepository.save(country);
-    }
-
+public interface CountryService {
+    public CountryDTO addCountry(CountryDTO locationDTO);
+    public List<CountryDTO> findAllCountries();
+    public CountryDTO findById(Long id);
+    public CountryDTO updateCountry(CountryDTO locationDTO);
+    public String deleteById(Long id);
 }
