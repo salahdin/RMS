@@ -91,6 +91,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>resort-management-system</finalName>
 	</build>
 
 </project>
