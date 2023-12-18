@@ -1,6 +1,6 @@
 package edu.miu.cs.cs544.security;
 
-import edu.miu.cs.cs544.domain.UserType;
+import edu.miu.cs.cs544.domain.enums.UserType;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

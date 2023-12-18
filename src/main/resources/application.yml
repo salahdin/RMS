@@ -1,3 +1,8 @@
+DB_HOST: localhost
+DB_NAME: cs544-examples
+DB_USER: root
+DB_PASS: 123456
+
 server:
   port: 8080
 

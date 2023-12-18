@@ -1,5 +1,6 @@
 package edu.miu.cs.cs544.domain;
 
+import edu.miu.cs.cs544.domain.enums.UserType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,11 +26,10 @@ public class User {
 	@Embedded
 	private AuditData auditData;
 
-	public User(String userName, String userPass, Boolean active, UserType userType, AuditData auditData) {
+	public User(String userName, String userPass, Boolean active, UserType userType) {
 		this.userName = userName;
 		this.userPass = userPass;
 		this.active = active;
 		this.userType = userType;
-		this.auditData = auditData;
 	}
 }

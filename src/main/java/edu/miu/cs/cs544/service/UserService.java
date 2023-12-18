@@ -1,7 +1,7 @@
 package edu.miu.cs.cs544.service;
 
 import edu.miu.cs.cs544.domain.User;
-import edu.miu.cs.cs544.domain.UserType;
+import edu.miu.cs.cs544.domain.enums.UserType;
 import edu.miu.cs.cs544.dto.LoggedInUserDTO;
 import edu.miu.cs.cs544.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
