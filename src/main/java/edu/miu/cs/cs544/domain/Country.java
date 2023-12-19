@@ -22,7 +22,7 @@ public class Country {
 	
 	private Integer population;
 
-	@OneToMany(mappedBy = "country")
+	@OneToMany(mappedBy = "country", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<State> states = new ArrayList<>() ;
 
 	@Embedded
