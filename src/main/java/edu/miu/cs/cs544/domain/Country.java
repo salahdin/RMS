@@ -16,8 +16,10 @@ public class Country {
 	@GeneratedValue
 	private Long id;
 
+	@Column(unique=true)
 	private String code;
-	
+
+	@Column(unique=true)
 	private String name;
 	
 	private Integer population;
