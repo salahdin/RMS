@@ -1,4 +1,4 @@
-package edu.miu.cs.cs544.cs544;
+package edu.miu.cs.cs544.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.miu.cs.cs544.controller.CountryController;
@@ -39,7 +39,9 @@ public class CountryControllerTest {
     public void testGetCountryById() throws Exception {
         Long a = 123L;
         Mockito.when(countryService.findById(123L)).thenReturn(new CountryDTO(123L, "USA", "United States of America", 339));
-        mock.perform(get("/countries/" + a.toString()).contentType(MediaType.APPLICATION_JSON))
+
+        mock.perform(get("/countries/" + a.toString())
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(123L))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("USA"))

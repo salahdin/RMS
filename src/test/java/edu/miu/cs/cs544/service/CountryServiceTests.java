@@ -1,4 +1,4 @@
-package edu.miu.cs.cs544.cs544;
+package edu.miu.cs.cs544.service;
 
 import edu.miu.cs.cs544.domain.Country;
 import edu.miu.cs.cs544.dto.CountryDTO;
