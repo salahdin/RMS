@@ -48,5 +48,14 @@ public class ReservationController {
         }
     }
 
+    @PutMapping()
+    public ResponseEntity<?> updateReservation(@RequestBody ReservationDTO reservationDTO) {
+        try {
+            ResponseDto updatedReservation = reservationService.updateReservation(reservationDTO);
+            return new ResponseEntity<>(updatedReservation, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 
 }

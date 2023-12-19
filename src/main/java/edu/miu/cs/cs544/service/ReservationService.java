@@ -37,7 +37,7 @@ public class ReservationService {
 
     public ResponseDto updateReservation(ReservationDTO reservationDTO) {
         Optional<Reservation> reservationOptional = reservationRepository.findById(reservationDTO.getId());
-        if (!reservationOptional.isPresent()) {
+        if (reservationOptional.isEmpty()) {
             throw new IllegalArgumentException("Reservation does not exist");
         }
 
@@ -51,7 +51,7 @@ public class ReservationService {
     }
 
     @Transactional
-    public ResponseDto createReservation(ReservationDTO reservationDTO){
+    public ResponseDto createReservation(ReservationDTO reservationDTO) {
         Customer customer = validateCustomer(reservationDTO.getCustomer().getEmail());
 
         Reservation reservation = new Reservation();
@@ -83,14 +83,13 @@ public class ReservationService {
         reservation.getItems().add(item);
     }
 
-    //TODO: refactor
-    public ResponseDto getAllReservations(){
-        List<Reservation> reservations = reservationRepository.findAll();
 
+    public ResponseDto getAllReservations() {
+        List<ReservationDTO> reservations = reservationAdapter.entityToDTOAll(reservationRepository.findAll());
         return ResponseDto.builder()
                 .success(true)
                 .message("Reservation fetched successfully")
-                .data(reservations.stream().map(x-> reservationAdapter.entityToDTO(x)))
+                .data(reservations)
                 .build();
     }
 
@@ -106,16 +105,16 @@ public class ReservationService {
                 .orElseThrow(() -> new IllegalArgumentException("Customer does not exist"));
     }
 
-private Product validateProduct(Integer productId) {
-    Product product = productService.getProductById(productId);
-    if (product==null) {
-        throw new IllegalArgumentException("Product does not exist");
+    private Product validateProduct(Integer productId) {
+        Product product = productService.getProductById(productId);
+        if (product == null) {
+            throw new IllegalArgumentException("Product does not exist");
+        }
+        return product;
     }
-    return product;
-}
 
     private void validateProductAvailability(Integer productId, String checkinDate, String checkoutDate) {
-        if(isProductReservedDuringStay(productId, checkinDate, checkoutDate)){
+        if (isProductReservedDuringStay(productId, checkinDate, checkoutDate)) {
             throw new IllegalArgumentException("Product is already reserved on this date");
         }
     }
