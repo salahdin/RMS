@@ -52,7 +52,7 @@ public class ReservationService {
 
     @Transactional
     public ResponseDto createReservation(ReservationDTO reservationDTO) {
-        Customer customer = validateCustomer(reservationDTO.getCustomer().getEmail());
+        Customer customer = validateCustomer(reservationDTO.getCustomerEmail());
 
         Reservation reservation = new Reservation();
         reservation.setCustomer(customer);
@@ -61,6 +61,10 @@ public class ReservationService {
         for (ItemDTO itemDTO : reservationDTO.getItems()) {
             Product product = validateProduct(itemDTO.getProduct().getId());
             validateProductAvailability(product.getId(), itemDTO.getCheckinDate(), itemDTO.getCheckoutDate());
+
+            if (product.getMax_occupancy() < itemDTO.getOccupants()) {
+                throw new IllegalArgumentException("Product quantity is not enough");
+            }
 
             Item item = itemAdaptor.DtoToEntity(itemDTO);
             item.setProduct(product);

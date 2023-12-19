@@ -12,6 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 public class ReservationDTO {
     private Integer id;
-    private CustomerDTO customer;
+    private String customerEmail;
     private List<ItemDTO> items;
 }

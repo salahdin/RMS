@@ -3,10 +3,12 @@ package edu.miu.cs.cs544.adapter;
 import edu.miu.cs.cs544.domain.Customer;
 import edu.miu.cs.cs544.domain.Reservation;
 import edu.miu.cs.cs544.dto.ReservationDTO;
+import edu.miu.cs.cs544.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class ReservationAdapter {
@@ -15,27 +17,34 @@ public class ReservationAdapter {
     private CustomerAdapter customerAdapter;
 
     @Autowired
+    private CustomerRepository customerRepository;
+
+    @Autowired
     private ItemAdaptor itemAdapter;
 
-    public ReservationDTO entityToDTO(Reservation reservation){
+    public ReservationDTO entityToDTO(Reservation reservation) {
         ReservationDTO reservationDTO = new ReservationDTO();
         reservationDTO.setId(reservation.getId());
         Customer customer = reservation.getCustomer();
-        reservationDTO.setCustomer(customerAdapter.entityToDTO(customer));
+        reservationDTO.setCustomerEmail(customer.getEmail());
         reservationDTO.setItems(itemAdapter.entityToDTOAll(reservation.getItems()));
         return reservationDTO;
     }
 
-    public Reservation DtoToEntity(ReservationDTO reservationDTO){
+    public Reservation DtoToEntity(ReservationDTO reservationDTO) {
         Reservation reservation = new Reservation();
         reservation.setId(reservationDTO.getId());
-        Customer customer = customerAdapter.DtoToEntity(reservationDTO.getCustomer());
-        reservation.setCustomer(customer);
+        Optional<Customer> customer = customerRepository.findCustomerByEmail(reservationDTO.getCustomerEmail());
+        if (customer.isPresent()) {
+            reservation.setCustomer(customer.get());
+        } else {
+            throw new IllegalArgumentException("Customer does not exist");
+        }
         reservation.setItems(itemAdapter.DtoToEntityAll(reservationDTO.getItems()));
         return reservation;
     }
 
-    public List<ReservationDTO> entityToDTOAll(List<Reservation> reservations){
+    public List<ReservationDTO> entityToDTOAll(List<Reservation> reservations) {
         return reservations.stream().map(this::entityToDTO).toList();
     }
 }
