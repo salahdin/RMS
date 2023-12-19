@@ -72,13 +72,29 @@ public class CountryControllerTest {
         Mockito.when(countryService.findAllCountries()).thenReturn(countries);
         mock.perform(MockMvcRequestBuilders.get("/countries"))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.countries").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.countries", hasSize(2)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.countries[0].id").value(123L))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.countries[0].code").value("USA"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.countries[0].name").value("United States of America"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.countries[0].population").value(339));
+                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(2)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(123L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].code").value("USA"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("United States of America"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].population").value(339));
         verify(countryService, times(1)).findAllCountries();
     }
 
+    @Test public void testUpdateCountry() throws Exception {
+        CountryDTO countryDTO = new CountryDTO(123L, "USA", "United States of America", 339);
+        mock.perform(MockMvcRequestBuilders
+                        .put("/countries")
+                        .content(asJsonString(countryDTO))
+                        .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isOk());
+        verify(countryService, times(1)).updateCountry(countryDTO);
+    }
+
+    @Test public void testDeleteCountryById() throws Exception {
+        mock.perform(MockMvcRequestBuilders
+                .delete("/countries/{id}",1))
+                .andExpect(status().isOk());
+        verify(countryService, times(1)).deleteById(123L);
+    }
 }
