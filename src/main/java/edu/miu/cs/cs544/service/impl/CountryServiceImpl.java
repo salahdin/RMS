@@ -23,8 +23,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CountryServiceImpl implements CountryService {
 
+    @Autowired
     private CountryAdapter countryAdapter;
 
+    @Autowired
     private CountryRepository countryRepository;
 
     @Override
