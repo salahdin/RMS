@@ -27,12 +27,22 @@ public class StateServiceImpl implements StateService {
     private final StateRepository stateRepository;
 
     @Override
-    public StateDTO addCountry(StateDTO stateDTO) {
+    public StateDTO addState(StateDTO stateDTO) {
         try {
             stateRepository.save(stateAdapter.dtoToEntity(stateDTO));
             return stateDTO;
         }catch (RuntimeException e){
-            throw new RuntimeException("Failed to add this country");
+            throw new RuntimeException("Failed to add this state");
+        }
+    }
+
+    @Override
+    public State addState(State state) {
+        try {
+            stateRepository.save(state);
+            return state;
+        }catch (RuntimeException e){
+            throw new RuntimeException("Failed to add this state");
         }
     }
     @Override

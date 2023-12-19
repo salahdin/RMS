@@ -1,5 +1,6 @@
 package edu.miu.cs.cs544.controller;
 
+import edu.miu.cs.cs544.domain.State;
 import edu.miu.cs.cs544.dto.CountryDTO;
 import edu.miu.cs.cs544.dto.StateDTO;
 import edu.miu.cs.cs544.service.CountryService;
@@ -15,13 +16,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/states")
 public class StateController {
-    
+
     @Autowired
     private StateService stateService;
 
     @PostMapping
-    public ResponseEntity<?> addState(StateDTO stateDTO){
-        return new ResponseEntity<StateDTO>(stateService.addCountry(stateDTO), HttpStatus.OK);
+    public ResponseEntity<?> addState(@RequestBody State state){
+        return new ResponseEntity<State>(stateService.addState(state), HttpStatus.OK);
     }
     @GetMapping
     public ResponseEntity<?> getAllStates(){

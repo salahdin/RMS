@@ -23,15 +23,25 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CountryServiceImpl implements CountryService {
 
-    private final CountryAdapter countryAdapter;
+    private CountryAdapter countryAdapter;
 
-    private final CountryRepository countryRepository;
+    private CountryRepository countryRepository;
 
     @Override
     public CountryDTO addCountry(CountryDTO countryDTO) {
         try {
             countryRepository.save(countryAdapter.dtoToEntity(countryDTO));
             return countryDTO;
+        }catch (RuntimeException e){
+            throw new RuntimeException("Failed to add this country");
+        }
+    }
+
+    @Override
+    public Country addCountry(Country country) {
+        try {
+            countryRepository.save(country);
+            return  country;
         }catch (RuntimeException e){
             throw new RuntimeException("Failed to add this country");
         }
@@ -64,5 +74,7 @@ public class CountryServiceImpl implements CountryService {
             throw new EntityNotFoundException("Failed to delete this member");
         }
     }
+
+
 
 }
