@@ -30,7 +30,7 @@ public class CountryServiceTests {
             return new CountryServiceImpl();
         }
     }
-    @Autowired
+    //@Autowired
     private CountryService countryService;
     @MockBean
     private CountryRepository countryRepository;
