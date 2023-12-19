@@ -26,7 +26,7 @@ public class Customer {
 	List<Reservation> reservations = new ArrayList<>();
 
 	@Embedded
-	private AuditData auditData;
+	private AuditData auditData = new AuditData();
 
 	@OneToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name="user_id")
@@ -44,7 +44,6 @@ public class Customer {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
-//		this.auditData = auditData;
 		this.user = user;
 		this.billingAddress = billingAddress;
 		this.physicalAddress = physicalAddress;

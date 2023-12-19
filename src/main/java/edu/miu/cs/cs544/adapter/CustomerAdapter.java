@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Component
 public class CustomerAdapter {
 
-        @Autowired
+    @Autowired
     UserAdapter userAdapter;
 
     @Autowired

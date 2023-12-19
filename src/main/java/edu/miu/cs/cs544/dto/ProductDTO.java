@@ -1,17 +1,20 @@
 package edu.miu.cs.cs544.dto;
 
-import edu.miu.cs.cs544.domain.Customer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReservationDTO {
+public class ProductDTO {
     private Integer id;
-    private CustomerDTO customer;
-    private List<ItemDTO> items;
+
+    private String name;
+
+    private String description;
+
+    private String excerpt;
+
+    private String type;
 }

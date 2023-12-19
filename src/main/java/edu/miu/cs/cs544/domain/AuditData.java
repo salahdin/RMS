@@ -3,6 +3,8 @@ package edu.miu.cs.cs544.domain;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,6 +20,20 @@ public class AuditData {
     private LocalDateTime createdOn;
 
     private LocalDateTime updatedOn;
+
+    @PrePersist
+    public void prePersist() {
+        //TODO: get the current user
+        createdBy = "System";
+        createdOn = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        //TODO: get the current user
+        updatedBy = "System";
+        updatedOn = LocalDateTime.now();
+    }
 
     public AuditData(String createdBy, String updatedBy, LocalDateTime createdOn, LocalDateTime updatedOn) {
         this.createdBy = createdBy;
