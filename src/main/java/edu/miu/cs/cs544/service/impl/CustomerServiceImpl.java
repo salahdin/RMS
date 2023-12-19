@@ -33,14 +33,12 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerDTO addCustomer(CustomerDTO customerDTO) {
-
         try {
-
             var customer = customerAdapter.DtoToEntity(customerDTO);
             customerRepository.save(customer);
             var customerDTOResponse = customerAdapter.entityToDTO(customer);
+            //
             return customerDTOResponse;
-
         } catch (RuntimeException e) {
             throw new RuntimeException("Failed to add the customer: " + e.getMessage());
         }

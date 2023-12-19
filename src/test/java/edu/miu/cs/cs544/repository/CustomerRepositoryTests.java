@@ -1,5 +1,7 @@
-package edu.miu.cs.cs544.cs544.repository;
+package edu.miu.cs.cs544.repository;
 
+import edu.miu.cs.cs544.adapter.CustomerAdapter;
+import edu.miu.cs.cs544.adapter.UserAdapter;
 import edu.miu.cs.cs544.domain.enums.UserType;
 import edu.miu.cs.cs544.dto.CustomerDTO;
 import edu.miu.cs.cs544.dto.UserDTO;
@@ -9,9 +11,13 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -19,13 +25,25 @@ public class CustomerRepositoryTests {
 
     @Autowired
     private TestEntityManager entityManager;
-
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    private CustomerAdapter customerAdapter;
+
+    @TestConfiguration
+    static class CustomerServiceImplTestContextConfiguration {
+        @Bean
+        public CustomerAdapter customerAdapter() {
+            return new CustomerAdapter();
+        }
+        @Bean
+        public UserAdapter userAdapter() {
+            return new UserAdapter();
+        }
+    }
 
     @Test
     public void whenFindByCustomerEmail_thenReturnCustomer() {
-
         //given
         UserDTO user = new UserDTO("anv", "123", true, UserType.CLIENT);
         CustomerDTO customerDTO = new CustomerDTO(
@@ -34,29 +52,14 @@ public class CustomerRepositoryTests {
                 "anvu.sg@gmail.com",
                 user
         );
-        entityManager.persist(customerDTO);
+        var customer = customerAdapter.DtoToEntity(customerDTO);
+        entityManager.persist(customer);
         entityManager.flush();
         //
         var found = customerRepository.findCustomerByEmail( customerDTO.getEmail() );
-                assertThat(customerDTO.getEmail())
-                .isEqualTo(found.get().getEmail());
-
-        // given
-//        Account account = new Account("958",10.0,"VAN AN");
-//        entityManager.persist(account);
-//        entityManager.flush();
-//
-//        // when
-//        Account found = accountRepository.findByAccountHolder("VAN AN");
-//
-//        // then
-//        assertThat(account.getAccountNumber())
-//                .isEqualTo(found.getAccountNumber());
-//        // and
-//        assertThat(account.getBalance())
-//                .isEqualTo(found.getBalance());
-//        // and
-//        assertThat(account.getAccountHolder())
-//                .isEqualTo(found.getAccountHolder());
+        //
+        assertEquals(customer.getEmail(), found.get().getEmail());
     }
+
+
 }

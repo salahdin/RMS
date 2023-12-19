@@ -1,4 +1,4 @@
-package edu.miu.cs.cs544.cs544;
+package edu.miu.cs.cs544;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

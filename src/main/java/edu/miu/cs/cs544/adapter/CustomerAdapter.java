@@ -30,9 +30,8 @@ public class CustomerAdapter {
     }
 
     public Customer DtoToEntity(CustomerDTO customerDTO){
+        //
         User user =  userAdapter.DtoToEntity(customerDTO.getUserDTO());
-        var password = bCryptPasswordEncoder.encode(customerDTO.getUserDTO().getUserPass());
-        user.setUserPass(password);
         //
         return new Customer(
                 customerDTO.getFirstName(),
