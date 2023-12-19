@@ -6,6 +6,8 @@ import edu.miu.cs.cs544.dto.ReservationDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class ReservationAdapter {
 
@@ -31,5 +33,9 @@ public class ReservationAdapter {
         reservation.setCustomer(customer);
         reservation.setItems(itemAdapter.DtoToEntityAll(reservationDTO.getItems()));
         return reservation;
+    }
+
+    public List<ReservationDTO> entityToDTOAll(List<Reservation> reservations){
+        return reservations.stream().map(this::entityToDTO).toList();
     }
 }

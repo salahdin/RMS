@@ -4,6 +4,8 @@ import edu.miu.cs.cs544.adapter.ItemAdaptor;
 import edu.miu.cs.cs544.adapter.ReservationAdapter;
 import edu.miu.cs.cs544.domain.Customer;
 import edu.miu.cs.cs544.domain.Reservation;
+import edu.miu.cs.cs544.dto.CustomerDTO;
+import edu.miu.cs.cs544.dto.ItemDTO;
 import edu.miu.cs.cs544.dto.ReservationDTO;
 import edu.miu.cs.cs544.dto.ResponseDto;
 import edu.miu.cs.cs544.repository.CustomerRepository;
@@ -16,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -77,7 +80,36 @@ class ReservationServiceTest {
     }
 
     @Test
-    void createReservation() {
+    void createReservation_validReservationDetails_reservationCreated() {
+        // Arrange
+        CustomerDTO customer = new CustomerDTO();
+        customer.setEmail("test@gmail.com");
+
+        ItemDTO itemDTO = new ItemDTO();
+        itemDTO.setOccupants(1);
+        itemDTO.setCheckinDate("2021-05-01");
+        itemDTO.setCheckoutDate("2021-05-02");
+
+        List<ItemDTO> items = List.of(itemDTO);
+        items.add(itemDTO);
+
+
+        ReservationDTO reservationDTO = new ReservationDTO();
+        reservationDTO.setCustomer(customer);
+        reservationDTO.setItems(items);
+
+
+        //when(customerRepository.findCustomerByEmail(customer.getEmail())).thenReturn(Optional.of(customer));
+        //when(reservationAdapter.DtoToEntity(reservationDTO)).thenReturn(reservation);
+        //when(reservationRepository.save(reservation)).thenReturn(reservation);
+
+        // Act
+        ResponseDto responseDto = reservationService.createReservation(reservationDTO);
+
+        // Assert
+        assertTrue(responseDto.isSuccess());
+        assertEquals("Reservation created successfully", responseDto.getMessage());
+        assertEquals(reservationDTO, responseDto.getData());
     }
 
     @Test
