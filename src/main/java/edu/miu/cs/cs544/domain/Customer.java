@@ -10,7 +10,7 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
-public class Customer {
+public class Customer extends AbstractEntity {
 
 	@Id
 	@GeneratedValue
@@ -20,7 +20,7 @@ public class Customer {
 	
 	private String lastName;
 
-	@Column(unique=true)
+	@Column(unique = true)
 	private String email;
 
 	@OneToMany(mappedBy = "customer")
