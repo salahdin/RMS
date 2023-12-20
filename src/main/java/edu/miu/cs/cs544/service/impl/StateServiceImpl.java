@@ -12,6 +12,7 @@ import edu.miu.cs.cs544.service.StateService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,8 +23,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class StateServiceImpl implements StateService {
 
+    @Autowired
     private final StateAdapter stateAdapter;
 
+    @Autowired
     private final StateRepository stateRepository;
 
     @Override

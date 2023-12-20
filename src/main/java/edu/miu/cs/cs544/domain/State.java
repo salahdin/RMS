@@ -1,8 +1,10 @@
 package edu.miu.cs.cs544.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
 
 @Entity
 @Data
@@ -21,6 +23,7 @@ public class State {
 	@Embedded
 	private AuditData auditData;
 
+	@JsonIgnore
 	@ManyToOne
 	private Country country;
 
