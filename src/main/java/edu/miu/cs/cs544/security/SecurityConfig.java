@@ -48,6 +48,7 @@ public class SecurityConfig {
 //                            .hasAnyAuthority(UserType.ADMIN.getType(), UserType.CLIENT.getType())
                         .requestMatchers(
                                 "/products/**",
+                                "/payments/**",
                                 "/reservations/**",
                                 "/items/**"
                         ).authenticated()
