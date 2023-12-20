@@ -58,4 +58,14 @@ public class ReservationController {
         }
     }
 
+    @PutMapping("/cancel/{id}")
+    public ResponseEntity<?> cancelReservation(@PathVariable Integer id) {
+        try {
+            ResponseDto updatedReservation = reservationService.cancelReservation(id);
+            return new ResponseEntity<>(updatedReservation, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

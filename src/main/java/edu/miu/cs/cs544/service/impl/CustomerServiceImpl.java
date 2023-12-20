@@ -2,6 +2,9 @@ package edu.miu.cs.cs544.service.impl;
 
 import edu.miu.cs.cs544.adapter.CustomerAdapter;
 import edu.miu.cs.cs544.adapter.UserAdapter;
+import edu.miu.cs.cs544.config.HibernateUtil;
+import edu.miu.cs.cs544.domain.Address;
+import edu.miu.cs.cs544.domain.User;
 import edu.miu.cs.cs544.dto.CustomerDTO;
 import edu.miu.cs.cs544.repository.CustomerRepository;
 import edu.miu.cs.cs544.repository.UserRepository;
@@ -28,6 +31,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     CustomerRepository customerRepository;
 
+
     @Autowired
     UserRepository userRepository;
 
@@ -36,6 +40,7 @@ public class CustomerServiceImpl implements CustomerService {
         try {
             var customer = customerAdapter.DtoToEntity(customerDTO);
             customerRepository.save(customer);
+
             var customerDTOResponse = customerAdapter.entityToDTO(customer);
             //
             return customerDTOResponse;
@@ -90,47 +95,91 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerDTO updateCustomerByEmail(CustomerDTO customerDTO) {
+    public CustomerDTO updateCustomerNamesByEmail(CustomerDTO customerDTO) {
         //
         try
         {
-
-            var customerOpt = customerRepository.findCustomerByEmail(customerDTO.getEmail());
-            if(customerOpt.isPresent())
+            var customerOpt = customerRepository.findByEmail(customerDTO.getEmail());
+            if(customerOpt!=null)
             {
-                // update process
                 var customer = customerAdapter.DtoToEntity(customerDTO);
-                customerRepository.save(customer);
+                customerOpt.setLastName(customerDTO.getLastName());
+                customerOpt.setLastName(customerDTO.getFirstName());
                 //
-                return customerAdapter.entityToDTO(customerOpt.get()) ;
+                customerRepository.save(customerOpt);
+                return customerAdapter.entityToDTO(customerOpt) ;
             }
             else
-                return null;
+                throw new IllegalArgumentException("Customer does not exist");
+
         }
         catch (RuntimeException e) {
             throw new RuntimeException("Failed to update customer: " + e.getMessage());
         }
     }
 
+
     @Override
-    public String deleteCustomerByEmail(String email) {
+    public String deactivateCustomerByEmail(String email) {
         //
         try
         {
-
-            var customerOpt = customerRepository.findCustomerByEmail(email);
-            if(customerOpt.isPresent())
+            var customerOpt = customerRepository.findByEmail(email);
+            if(customerOpt != null)
             {
-                var user = customerOpt.get().getUser();
+                var user = customerOpt.getUser();
                 user.setActive(false);
+
                 userRepository.save(user);
                 return "User account for customer [" + email + " ] was deactivated successfully";
             }
             else
-                return "";
+                throw new IllegalArgumentException("Customer does not exist");
         }
         catch (RuntimeException e) {
             throw new RuntimeException("Failed to deactivate customer: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public List<CustomerDTO> getAllCustomers() {
+        return null;
+    }
+
+    @Override
+    public CustomerDTO updateCustomerBillingAddressByEmail(CustomerDTO customerDTO) {
+        try
+        {
+            var customerOpt = customerRepository.findByEmail(customerDTO.getEmail());
+            if(customerOpt != null)
+            {
+
+                return customerAdapter.entityToDTO(customerOpt);
+            }
+            else
+                throw new IllegalArgumentException("Customer does not exist");
+        }
+        catch (RuntimeException e) {
+            throw new RuntimeException("Failed to update [updateCustomerBillingAddressByEmail] : " + e.getMessage());
+        }
+    }
+
+    @Override
+    public CustomerDTO updateCustomerPhysicalAddressByEmail(CustomerDTO customerDTO) {
+        try
+        {
+            var customerOpt = customerRepository.findByEmail(customerDTO.getEmail());
+            if(customerOpt != null)
+            {
+                customerOpt.setPhysicalAddress(  customerDTO.getPhysicalAddress() );
+
+                return customerAdapter.entityToDTO(customerOpt);
+            }
+            else
+                throw new IllegalArgumentException("Customer does not exist");
+        }
+        catch (RuntimeException e) {
+            throw new RuntimeException("Failed to update [updateCustomerPhysicalAddressByEmail] : " + e.getMessage());
         }
     }
 

@@ -1,5 +1,6 @@
 package edu.miu.cs.cs544.adapter;
 
+import edu.miu.cs.cs544.domain.AuditData;
 import edu.miu.cs.cs544.domain.Customer;
 import edu.miu.cs.cs544.domain.User;
 import edu.miu.cs.cs544.dto.CustomerDTO;
@@ -17,6 +18,7 @@ public class CustomerAdapter {
     @Autowired
     UserAdapter userAdapter;
 
+
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -32,8 +34,7 @@ public class CustomerAdapter {
     public Customer DtoToEntity(CustomerDTO customerDTO){
         //
         User user =  userAdapter.DtoToEntity(customerDTO.getUserDTO());
-        //
-        return new Customer(
+        var customer =  new Customer(
                 customerDTO.getFirstName(),
                 customerDTO.getLastName(),
                 customerDTO.getEmail(),
@@ -41,6 +42,7 @@ public class CustomerAdapter {
                 customerDTO.getBillingAddress(),
                 customerDTO.getPhysicalAddress()
         );
+        return customer;
     }
 
     public List<Customer> DtoToEntityAll(List<CustomerDTO> customerDTOs){

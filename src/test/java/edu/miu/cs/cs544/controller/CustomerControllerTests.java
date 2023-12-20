@@ -26,6 +26,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -68,9 +69,35 @@ public class CustomerControllerTests {
                 )
         ));
         mock.perform(get("/customers/" + email).with(
-                SecurityMockMvcRequestPostProcessors.jwt())
+                                jwt())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
+    @Test
+    public void testGetCustomerByEmailMock() throws Exception{
+        String email = "customer@gmail.com";
+        Mockito.when(customerService.getCustomerByEmail("customer@gmail.com")).thenReturn(new CustomerDTO(
+                "customer",
+                "rms",
+                "customer@gmail.com",
+                new UserDTO(
+                        "customer",
+                        "123",
+                        true,
+                        UserType.CLIENT
+                )
+        ));
+//        mock.perform(get("/customers/" + email).with(
+//                                jwt())
+//                        .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isOk());
+
+        mock
+            .perform(get("/customers"+ email).with(jwt()).contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk());
+    }
+
+//    mvc
+//            .perform(get("/endpoint").with(jwt()));
 }

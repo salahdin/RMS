@@ -42,7 +42,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/users/authenticate",
                                 "/users/add",
-                                "/users/ping"
+                                "/users/ping",
+                                "/customers"
                         ).permitAll()
                                 .requestMatchers(HttpMethod.GET, "/countries/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/states/**").permitAll()
@@ -53,7 +54,14 @@ public class SecurityConfig {
 //                        .requestMatchers("/users/admin").hasAuthority(UserType.ADMIN.getType())
 //                        .requestMatchers("/users/client")
 //                            .hasAnyAuthority(UserType.ADMIN.getType(), UserType.CLIENT.getType())
-                        .requestMatchers("/users/**").authenticated()
+                        .requestMatchers(
+                                "/users/**",
+                                "/customers/**",
+                                "/products/**",
+                                "/payments/**",
+                                "/reservations/**",
+                                "/items/**"
+                        ).authenticated()
                 )
                 .sessionManagement(config -> {
                     config.sessionCreationPolicy(SessionCreationPolicy.STATELESS);

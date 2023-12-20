@@ -27,7 +27,7 @@ public class Reservation {
 	@Embedded
 	private AuditData auditData = new AuditData();
 
-	@Enumerated
+	@Enumerated(EnumType.STRING)
 	public ReservationState reservationState;
 
 	public Reservation(Customer customer, AuditData auditData) {

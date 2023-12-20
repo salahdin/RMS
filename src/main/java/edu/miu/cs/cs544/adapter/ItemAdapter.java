@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class ItemAdaptor {
+public class ItemAdapter {
 
     public ItemDTO entityToDTO(Item item){
         ItemDTO itemDTO = new ItemDTO();
@@ -23,13 +23,14 @@ public class ItemAdaptor {
         return itemDTO;
     }
 
-    public Item DtoToEntity(ItemDTO itemDTO){
+    public Item dtoToEntity(ItemDTO itemDTO){
         Item item = new Item();
         //TODO: add products
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         item.setCheckinDate(LocalDate.parse(itemDTO.getCheckinDate(), formatter));
         item.setCheckoutDate(LocalDate.parse(itemDTO.getCheckoutDate(), formatter));
+        item.setOccupants(itemDTO.getOccupants());
 
         return item;
     }
@@ -38,7 +39,7 @@ public class ItemAdaptor {
         return items.stream().map(item -> entityToDTO(item)).collect(Collectors.toList());
     }
 
-    public List<Item> DtoToEntityAll(List<ItemDTO> itemDTOs){
-        return itemDTOs.stream().map(itemDTO -> DtoToEntity(itemDTO)).collect(Collectors.toList());
+    public List<Item> dtoToEntityAll(List<ItemDTO> itemDTOs){
+        return itemDTOs.stream().map(itemDTO -> dtoToEntity(itemDTO)).collect(Collectors.toList());
     }
 }

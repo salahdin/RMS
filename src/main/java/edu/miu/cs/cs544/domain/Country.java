@@ -19,7 +19,8 @@ public class Country {
 
 	@Column(unique=true)
 	private String code;
-	
+
+	@Column(unique=true)
 	private String name;
 	
 	private Integer population;
