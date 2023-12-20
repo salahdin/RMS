@@ -1,5 +1,6 @@
 package edu.miu.cs.cs544.controller;
 
+import edu.miu.cs.cs544.dto.AddressDTO;
 import edu.miu.cs.cs544.dto.CustomerDTO;
 import edu.miu.cs.cs544.dto.ResponseDto;
 import edu.miu.cs.cs544.service.CustomerService;
@@ -79,6 +80,33 @@ public class CustomerController {
                    )
                    , HttpStatus.BAD_REQUEST);
        }
+    }
+
+    @PutMapping("/billing/{email}")
+    @PreAuthorize("hasAnyAuthority('ADMIN','CLIENT')")
+    public ResponseEntity<?> updateCustomerBillingByEmail(@PathVariable("email") String email, @RequestBody AddressDTO addressDTO){
+        try {
+            var result = customerService.updateCustomerBillingAddressByEmail(email, addressDTO);
+            return new ResponseEntity<ResponseDto>(
+                    new ResponseDto(
+                            true,
+                            "Update for user [" + email + "] successfully",
+                            result
+                    )
+                    , HttpStatus.OK);
+        }
+        catch (Exception ex)
+        {
+            return new ResponseEntity<ResponseDto>(
+                    new ResponseDto(
+                            false,
+                            "Update for user[" + email + "] has error: " + ex.getMessage(),
+                            null
+                    )
+                    , HttpStatus.BAD_REQUEST);
+        }
+
+
     }
 
     @PutMapping("/deactivate/{email}")

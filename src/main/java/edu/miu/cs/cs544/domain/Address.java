@@ -27,7 +27,7 @@ public class Address {
 	@Embedded
 	private AuditData auditData;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	private State state;
 
 	public Address(String line1, String line2, String city, String postalCode, AddressType addressType, AuditData auditData, State state) {
@@ -37,6 +37,15 @@ public class Address {
 		this.postalCode = postalCode;
 		this.addressType = addressType;
 		this.auditData = auditData;
+		this.state = state;
+	}
+
+	public Address(String line1, String line2, String city, String postalCode, AddressType addressType, State state) {
+		this.line1 = line1;
+		this.line2 = line2;
+		this.city = city;
+		this.postalCode = postalCode;
+		this.addressType = addressType;
 		this.state = state;
 	}
 }

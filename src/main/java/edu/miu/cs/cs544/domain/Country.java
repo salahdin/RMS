@@ -1,5 +1,6 @@
 package edu.miu.cs.cs544.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,6 +25,7 @@ public class Country {
 	
 	private Integer population;
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "country")
 	private List<State> states = new ArrayList<>() ;
 

@@ -18,7 +18,7 @@ public class UserAdapter {
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public UserDTO entityToDTO(User user){
-        return new UserDTO(user.getUserName(), user.getUserPass(), user.getActive(), user.getUserType());
+        return new UserDTO(user.getUserName(), "", user.getActive(), user.getUserType());
     }
 
     public List<UserDTO> entityToDTOAll(List<User> users){

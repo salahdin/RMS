@@ -16,8 +16,12 @@ public class AddressAdapter {
     @Autowired
     StateAdapter stateAdapter;
     public AddressDTO entityToDTO(Address address){
-        return new AddressDTO(address.getLine1(), address.getLine2(), address.getCity(), address.getPostalCode(), address.getAddressType(), stateAdapter.entityToDto(address.getState()));
+        var stateDto =  stateAdapter.entityToDto(address.getState());
+        return new AddressDTO(address.getLine1(), address.getLine2(), address.getCity(), address.getPostalCode(), address.getAddressType(), stateDto);
     }
 
+    public Address DtoToEntity(AddressDTO address){
+        return new Address(address.getLine1(), address.getLine2(), address.getCity(), address.getPostalCode(), address.getAddressType(), stateAdapter.dtoToEntity(address.getState()));
+    }
 
 }

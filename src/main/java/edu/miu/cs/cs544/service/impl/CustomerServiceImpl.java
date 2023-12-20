@@ -1,12 +1,14 @@
 package edu.miu.cs.cs544.service.impl;
 
+import edu.miu.cs.cs544.adapter.AddressAdapter;
 import edu.miu.cs.cs544.adapter.CustomerAdapter;
 import edu.miu.cs.cs544.adapter.UserAdapter;
 import edu.miu.cs.cs544.config.HibernateUtil;
 import edu.miu.cs.cs544.domain.Address;
-import edu.miu.cs.cs544.domain.Customer;
+import edu.miu.cs.cs544.domain.AuditData;
 import edu.miu.cs.cs544.domain.User;
 import edu.miu.cs.cs544.domain.enums.UserType;
+import edu.miu.cs.cs544.dto.AddressDTO;
 import edu.miu.cs.cs544.dto.CustomerDTO;
 import edu.miu.cs.cs544.dto.LoggedInUserDTO;
 import edu.miu.cs.cs544.repository.CustomerRepository;
@@ -30,6 +32,10 @@ public class CustomerServiceImpl implements CustomerService {
     CustomerAdapter customerAdapter;
     @Autowired
     UserAdapter userAdapter;
+
+    @Autowired
+    AddressAdapter addressAdapter;
+
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
@@ -117,13 +123,14 @@ public class CustomerServiceImpl implements CustomerService {
             }
             else
                 throw new IllegalArgumentException("Customer does not exist");
+
         }
         catch (RuntimeException e) {
             throw new RuntimeException("Failed to update customer: " + e.getMessage());
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            throw e;
+            throw  ex;
         }
     }
 
@@ -133,16 +140,16 @@ public class CustomerServiceImpl implements CustomerService {
         //
         try
         {
-            checkAdminAuthorization(email);
+            checkAuthorization(email);
             //
             var customerOpt = customerRepository.findByEmail(email);
             if(customerOpt != null)
             {
                 var user = customerOpt.getUser();
+                user.setAuditData(new AuditData());
                 user.setActive(false);
-
                 userRepository.save(user);
-                return customerAdapter.entityToDTO(customerRepository.findByEmail(email));
+                return customerAdapter.entityToDTO(customerRepository.findByEmail(email)) ;
             }
             else
                 throw new IllegalArgumentException("Customer does not exist");
@@ -150,27 +157,34 @@ public class CustomerServiceImpl implements CustomerService {
         catch (RuntimeException e) {
             throw new RuntimeException("Failed to deactivate customer: " + e.getMessage());
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            throw e;
+            throw  ex;
         }
     }
 
     @Override
     public List<CustomerDTO> getAllCustomers() {
-        return customerAdapter.entityToDTOAll( customerRepository.findAll());
+        return null;
     }
 
     @Override
-    public CustomerDTO updateCustomerBillingAddressByEmail(CustomerDTO customerDTO) {
+    public CustomerDTO updateCustomerBillingAddressByEmail(String email, AddressDTO addressDTO) {
         try
         {
-            checkAuthorization(customerDTO.getEmail());
-            //
-            var customerOpt = customerRepository.findByEmail(customerDTO.getEmail());
+            checkAuthorization(email);
+
+            var customerOpt = customerRepository.findByEmail(email);
             if(customerOpt != null)
             {
-                return customerAdapter.entityToDTO(customerOpt);
+                customerOpt.setBillingAddress( addressAdapter.DtoToEntity(addressDTO) );
+                customerOpt.setAuditData(new AuditData());
+                customerRepository.save(customerOpt);
+                var customer = customerRepository.findByEmail(email);
+
+                System.out.println(customer.getBillingAddress());
+                var return_data = customerAdapter.entityToDTO(customerRepository.findByEmail(email));
+                return return_data;
             }
             else
                 throw new IllegalArgumentException("Customer does not exist");
@@ -178,9 +192,33 @@ public class CustomerServiceImpl implements CustomerService {
         catch (RuntimeException e) {
             throw new RuntimeException("Failed to update [updateCustomerBillingAddressByEmail] : " + e.getMessage());
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            throw e;
+            throw  ex;
+        }
+    }
+
+    @Override
+    public CustomerDTO updateCustomerPhysicalAddressByEmail(String email, AddressDTO addressDTO) {
+        try
+        {
+            checkAuthorization(email);
+
+            var customerOpt = customerRepository.findByEmail(email);
+            if(customerOpt != null)
+            {
+                customerOpt.setPhysicalAddress(addressAdapter.DtoToEntity(addressDTO));
+
+                return customerAdapter.entityToDTO(customerRepository.findByEmail(email));
+            }
+            else
+                throw new IllegalArgumentException("Customer does not exist");
+        }
+        catch (RuntimeException e) {
+            throw new RuntimeException("Failed to update [updateCustomerPhysicalAddressByEmail] : " + e.getMessage());
+        }
+        catch (Exception ex){
+            throw ex;
         }
     }
 
@@ -203,26 +241,4 @@ public class CustomerServiceImpl implements CustomerService {
             throw new IllegalArgumentException("User is not authorized to execute the function");
         }
     }
-
-    @Override
-    public CustomerDTO updateCustomerPhysicalAddressByEmail(CustomerDTO customerDTO) {
-        try
-        {
-            checkAuthorization(customerDTO.getEmail());
-            //
-            var customerOpt = customerRepository.findByEmail(customerDTO.getEmail());
-            if(customerOpt != null)
-            {
-                customerOpt.setPhysicalAddress(  customerDTO.getPhysicalAddress() );
-                return customerAdapter.entityToDTO(customerOpt);
-            }
-            else
-                throw new IllegalArgumentException("Customer does not exist");
-        }
-        catch (RuntimeException e) {
-            throw new RuntimeException("Failed to update [updateCustomerPhysicalAddressByEmail] : " + e.getMessage());
-        }
-    }
-
-
 }

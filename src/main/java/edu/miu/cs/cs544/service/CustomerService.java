@@ -1,5 +1,6 @@
 package edu.miu.cs.cs544.service;
 
+import edu.miu.cs.cs544.dto.AddressDTO;
 import edu.miu.cs.cs544.dto.CustomerDTO;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public interface CustomerService {
 
     List<CustomerDTO> getAllCustomers();
 
-    CustomerDTO updateCustomerBillingAddressByEmail(CustomerDTO customerDTO);
-    CustomerDTO updateCustomerPhysicalAddressByEmail(CustomerDTO customerDTO);
+    CustomerDTO updateCustomerBillingAddressByEmail(String email, AddressDTO addressDTO);
+    CustomerDTO updateCustomerPhysicalAddressByEmail(String email, AddressDTO addressDTO);
 
 }
