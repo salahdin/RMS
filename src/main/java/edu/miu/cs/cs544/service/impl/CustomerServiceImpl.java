@@ -48,14 +48,27 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public CustomerDTO addCustomer(CustomerDTO customerDTO) {
         try {
+            var existing = customerRepository.findByEmail(customerDTO.getEmail());
+            if(existing != null)
+            {
+                throw new IllegalArgumentException("Customer email already exist");
+            }
+            var user = userRepository.finByUsername(customerDTO.getUserDTO().getUserName());
+            if(user.isPresent())
+            {
+                throw new IllegalArgumentException("Username already exist");
+            }
+            //
             var customer = customerAdapter.DtoToEntity(customerDTO);
             customerRepository.save(customer);
 
             var customerDTOResponse = customerAdapter.entityToDTO(customer);
             //
             return customerDTOResponse;
-        } catch (RuntimeException e) {
-            throw new RuntimeException("Failed to add the customer: " + e.getMessage());
+        }
+        catch (Exception ex)
+        {
+            throw ex;
         }
     }
 
@@ -105,16 +118,15 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerDTO updateCustomerNamesByEmail(CustomerDTO customerDTO) {
+    public CustomerDTO updateCustomerNamesByEmail(String email, CustomerDTO customerDTO) {
         //
         try
         {
-            checkAuthorization(customerDTO.getEmail());
+            checkAuthorization(email);
             //
             var customerOpt = customerRepository.findByEmail(customerDTO.getEmail());
             if(customerOpt!=null)
             {
-                var customer = customerAdapter.DtoToEntity(customerDTO);
                 customerOpt.setLastName(customerDTO.getLastName());
                 customerOpt.setLastName(customerDTO.getFirstName());
                 //
@@ -165,7 +177,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public List<CustomerDTO> getAllCustomers() {
-        return null;
+        return customerAdapter.entityToDTOAll( customerRepository.findAll() );
     }
 
     @Override
@@ -208,7 +220,6 @@ public class CustomerServiceImpl implements CustomerService {
             if(customerOpt != null)
             {
                 customerOpt.setPhysicalAddress(addressAdapter.DtoToEntity(addressDTO));
-
                 return customerAdapter.entityToDTO(customerRepository.findByEmail(email));
             }
             else

@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AuthorizationAdvice {
 
+
     private void checkAuthorization(String email) {
         LoggedInUserDTO loggedInUserDTO = SecurityUtils.getLoggedInUser();
         if (loggedInUserDTO == null) {

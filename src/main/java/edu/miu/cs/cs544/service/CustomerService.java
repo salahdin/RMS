@@ -14,7 +14,7 @@ public interface CustomerService {
 
     List<CustomerDTO> getCustomerByLastName(String lastName);
 
-    CustomerDTO updateCustomerNamesByEmail(CustomerDTO customerDTO);
+    CustomerDTO updateCustomerNamesByEmail(String email, CustomerDTO customerDTO);
 
     CustomerDTO deactivateCustomerByEmail(String email);
 

@@ -21,14 +21,31 @@ public class CustomerController {
     @Autowired
     CustomerService customerService;
 
-
     @GetMapping
     public ResponseEntity<?> getCustomers(){
         return new ResponseEntity<List<CustomerDTO>>(customerService.getAllCustomers(), HttpStatus.OK);
     }
+
     @PostMapping
     public ResponseEntity<?> addCustomer(@RequestBody CustomerDTO customerDTO){
-        return new ResponseEntity<CustomerDTO>(customerService.addCustomer(customerDTO), HttpStatus.OK);
+        try{
+            var result = customerService.addCustomer(customerDTO);
+            return new ResponseEntity<ResponseDto>(
+                    new ResponseDto(
+                        true,
+                        "Customer added successfully",
+                        result
+                    ), HttpStatus.OK);
+        }
+        catch (Exception ex)
+        {
+            return new ResponseEntity<ResponseDto>(
+                new ResponseDto(
+                        true,
+                        ex.getMessage(),
+                        null
+                ), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/email/{email}")
@@ -58,10 +75,9 @@ public class CustomerController {
     // more to implement: update name(s) / addresses
     @PutMapping("/email/{email}")
     @PreAuthorize("hasAnyAuthority('ADMIN','CLIENT')")
-    public ResponseEntity<?> updateCustomerByEmail(@RequestBody CustomerDTO customerDTO){
-        //return new ResponseEntity<String>("result", HttpStatus.OK );
+    public ResponseEntity<?> updateCustomerByEmail(@PathVariable String email, @RequestBody CustomerDTO customerDTO){
        try {
-           var result = customerService.updateCustomerNamesByEmail(customerDTO);
+           var result = customerService.updateCustomerNamesByEmail(email, customerDTO);
            return new ResponseEntity<ResponseDto>(
                    new ResponseDto(
                            true,
@@ -105,8 +121,32 @@ public class CustomerController {
                     )
                     , HttpStatus.BAD_REQUEST);
         }
+    }
 
-
+    @PutMapping("/physical/{email}")
+    @PreAuthorize("hasAnyAuthority('ADMIN','CLIENT')")
+    public ResponseEntity<?> updateCustomerPhysicalAddressByEmail(@PathVariable("email") String email,
+                                                                  @RequestBody AddressDTO addressDTO){
+        try {
+            var result = customerService.updateCustomerPhysicalAddressByEmail(email, addressDTO);
+            return new ResponseEntity<ResponseDto>(
+                    new ResponseDto(
+                            true,
+                            "Update for user [" + email + "] successfully",
+                            result
+                    )
+                    , HttpStatus.OK);
+        }
+        catch (Exception ex)
+        {
+            return new ResponseEntity<ResponseDto>(
+                    new ResponseDto(
+                            false,
+                            "Update for user[" + email + "] has error: " + ex.getMessage(),
+                            null
+                    )
+                    , HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping("/deactivate/{email}")
