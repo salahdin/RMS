@@ -1,5 +1,6 @@
 package edu.miu.cs.cs544.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,14 +25,14 @@ public class Country {
 	
 	private Integer population;
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "country")
 	private List<State> states = new ArrayList<>() ;
 
 	@Embedded
 	private AuditData auditData = new AuditData();
 
-	public Country(Long id, String code, String name, Integer population, List<State> states, AuditData auditData) {
-		this.id = id;
+	public Country(String code, String name, Integer population, List<State> states, AuditData auditData) {
 		this.code = code;
 		this.name = name;
 		this.population = population;
@@ -39,16 +40,14 @@ public class Country {
 		this.auditData = auditData;
 	}
 
-	public Country(Long id, String code, String name, Integer population, List<State> states) {
-		this.id = id;
+	public Country(String code, String name, Integer population, List<State> states) {
 		this.code = code;
 		this.name = name;
 		this.population = population;
 		this.states = states;
 	}
 
-	public Country(Long id, String code, String name, Integer population) {
-		this.id = id;
+	public Country(String code, String name, Integer population) {
 		this.code = code;
 		this.name = name;
 		this.population = population;

@@ -9,13 +9,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 public interface CountryService {
     public CountryDTO addCountry(CountryDTO countryDTO);
-
-    public Country addCountry(Country country);
     public List<CountryDTO> findAllCountries();
     public CountryDTO findById(Long id);
-    public CountryDTO updateCountry(CountryDTO countryDTO);
+    public CountryDTO updateCountry(Long id, CountryDTO countryDTO);
     public String deleteById(Long id);
 }

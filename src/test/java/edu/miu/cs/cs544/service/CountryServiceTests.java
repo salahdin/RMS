@@ -39,7 +39,7 @@ public class CountryServiceTests {
     public void setUp() {
 
         Long countryId = 123L;
-        Country country = new Country(countryId,"USA", "United States of America",339 );
+        Country country = new Country("USA", "United States of America",339 );
         Optional<Country> countryOptional = Optional.of(country);
 
         Mockito.when(countryRepository.findById(countryId)).thenReturn(countryOptional);

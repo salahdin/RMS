@@ -15,12 +15,12 @@ public class StateAdapter {
         return new StateDTO(state.getId(), state.getCode(), state.getName(), state.getCountry());
     }
     public List<StateDTO> entityToDtoAll(List<State> states){
-        return states.stream().map(state -> entityToDto(state)).collect(Collectors.toList());
+        return states.stream().map(this::entityToDto).collect(Collectors.toList());
     }
     public State dtoToEntity(StateDTO stateDTO){
-        return new State(stateDTO.getId(), stateDTO.getCode(), stateDTO.getName(), stateDTO.getCountry());
+        return new State(stateDTO.getCode(), stateDTO.getName(), stateDTO.getCountry());
     }
     public List<State> dtoToEntityAll(List<StateDTO> stateDTOS){
-        return stateDTOS.stream().map(stateDTO -> dtoToEntity(stateDTO)).collect(Collectors.toList());
+        return stateDTOS.stream().map(this::dtoToEntity).collect(Collectors.toList());
     }
 }

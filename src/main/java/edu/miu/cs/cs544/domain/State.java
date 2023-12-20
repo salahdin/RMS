@@ -1,8 +1,10 @@
 package edu.miu.cs.cs544.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
 
 @Entity
 @Data
@@ -27,13 +29,11 @@ public class State {
 	public State(String code, String name, AuditData auditData, Country country) {
 		this.code = code;
 		this.name = name;
-		//
 		this.auditData = auditData;
 		this.country = country;
 	}
 
-	public State(Integer id, String code, String name, Country country) {
-		this.id = id;
+	public State(String code, String name, Country country) {
 		this.code = code;
 		this.name = name;
 		this.country = country;
