@@ -2,6 +2,7 @@ package edu.miu.cs.cs544.domain;
 
 import java.time.LocalDateTime;
 
+import edu.miu.cs.cs544.service.util.SecurityUtils;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
@@ -23,15 +24,13 @@ public class AuditData {
 
     @PrePersist
     public void prePersist() {
-        //TODO: get the current user
-        createdBy = "System";
+        createdBy = SecurityUtils.getLoggedInUserName();
         createdOn = LocalDateTime.now();
     }
 
     @PreUpdate
     public void preUpdate() {
-        //TODO: get the current user
-        updatedBy = "System";
+        updatedBy = SecurityUtils.getLoggedInUserName();
         updatedOn = LocalDateTime.now();
     }
 

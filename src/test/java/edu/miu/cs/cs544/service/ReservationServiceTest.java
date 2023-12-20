@@ -1,6 +1,6 @@
 package edu.miu.cs.cs544.service;
 
-import edu.miu.cs.cs544.adapter.ItemAdaptor;
+import edu.miu.cs.cs544.adapter.ItemAdapter;
 import edu.miu.cs.cs544.adapter.ReservationAdapter;
 import edu.miu.cs.cs544.domain.Customer;
 import edu.miu.cs.cs544.domain.Reservation;
@@ -42,7 +42,7 @@ class ReservationServiceTest {
     private ProductRepository productRepository;
 
     @MockBean
-    private ItemAdaptor itemAdaptor;
+    private ItemAdapter itemAdapter;
 
     @MockBean
     private ItemRepository itemRepository;
@@ -67,7 +67,7 @@ class ReservationServiceTest {
 
 
         when(reservationRepository.findById(reservationDTO.getId())).thenReturn(Optional.of(reservation));
-        when(reservationAdapter.DtoToEntity(reservationDTO)).thenReturn(reservation);
+        when(reservationAdapter.dtoToEntity(reservationDTO)).thenReturn(reservation);
         when(reservationRepository.save(reservation)).thenReturn(reservation);
 
         // Act
@@ -95,12 +95,12 @@ class ReservationServiceTest {
 
 
         ReservationDTO reservationDTO = new ReservationDTO();
-        reservationDTO.setCustomer(customer);
+        reservationDTO.setCustomerEmail(customer.getEmail());
         reservationDTO.setItems(items);
 
 
         //when(customerRepository.findCustomerByEmail(customer.getEmail())).thenReturn(Optional.of(customer));
-        //when(reservationAdapter.DtoToEntity(reservationDTO)).thenReturn(reservation);
+        //when(reservationAdapter.dtoToEntity(reservationDTO)).thenReturn(reservation);
         //when(reservationRepository.save(reservation)).thenReturn(reservation);
 
         // Act

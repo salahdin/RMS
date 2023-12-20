@@ -20,7 +20,7 @@ public class ReservationAdapter {
     private CustomerRepository customerRepository;
 
     @Autowired
-    private ItemAdaptor itemAdapter;
+    private ItemAdapter itemAdapter;
 
     public ReservationDTO entityToDTO(Reservation reservation) {
         ReservationDTO reservationDTO = new ReservationDTO();
@@ -31,7 +31,7 @@ public class ReservationAdapter {
         return reservationDTO;
     }
 
-    public Reservation DtoToEntity(ReservationDTO reservationDTO) {
+    public Reservation dtoToEntity(ReservationDTO reservationDTO) {
         Reservation reservation = new Reservation();
         reservation.setId(reservationDTO.getId());
         Optional<Customer> customer = customerRepository.findCustomerByEmail(reservationDTO.getCustomerEmail());
@@ -40,7 +40,7 @@ public class ReservationAdapter {
         } else {
             throw new IllegalArgumentException("Customer does not exist");
         }
-        reservation.setItems(itemAdapter.DtoToEntityAll(reservationDTO.getItems()));
+        reservation.setItems(itemAdapter.dtoToEntityAll(reservationDTO.getItems()));
         return reservation;
     }
 
