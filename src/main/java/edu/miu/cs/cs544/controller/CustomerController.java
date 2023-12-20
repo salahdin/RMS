@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -21,12 +20,18 @@ public class CustomerController {
     @Autowired
     CustomerService customerService;
 
+
+    @GetMapping
+    public ResponseEntity<?> getCustomers(){
+        return new ResponseEntity<List<CustomerDTO>>(customerService.getAllCustomers(), HttpStatus.OK);
+    }
     @PostMapping
-    public ResponseEntity<?> addCustomer(@Valid  @RequestBody CustomerDTO customerDTO){
+    public ResponseEntity<?> addCustomer(@RequestBody CustomerDTO customerDTO){
         return new ResponseEntity<CustomerDTO>(customerService.addCustomer(customerDTO), HttpStatus.OK);
     }
 
     @GetMapping("/email/{email}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'CLIENT')")
     public ResponseEntity<?> getCustomerByEmail(@PathVariable("email") String email){
         return new ResponseEntity<CustomerDTO>(
                 customerService.getCustomerByEmail(email)
@@ -42,6 +47,7 @@ public class CustomerController {
 
 
     @GetMapping("/lastname/{lastname}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> getCustomersByLastname(@PathVariable("lastname") String lastname){
         return new ResponseEntity<List<CustomerDTO>>(
                 customerService.getCustomerByLastName(lastname)
@@ -52,14 +58,15 @@ public class CustomerController {
 
     ///@PreAuthorize("hasAnyAuthority('ADMIN','CLIENT')")
     @PutMapping("/email/{email}")
-    @PreAuthorize("hasAnyAuthority('ADMIN')")
-    public ResponseEntity<?> updateCustomerByEmail(@Valid  @RequestBody CustomerDTO customerDTO){
-        var result = customerService.updateCustomerByEmail(customerDTO);
+    @PreAuthorize("hasAnyAuthority('ADMIN','CLIENT')")
+    public ResponseEntity<?> updateCustomerByEmail(@RequestBody CustomerDTO customerDTO){
+        //return new ResponseEntity<String>("result", HttpStatus.OK );
+        var result = customerService.updateCustomerNamesByEmail(customerDTO);
         return new ResponseEntity<CustomerDTO>(result, HttpStatus.OK );
-        //
+
     }
 
-    @DeleteMapping("/email/{email}")
+    @PutMapping("/deactivate/{email}")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> deactivateCustomerByEmail(@PathVariable("email") String email){
         var customer = customerService.getCustomerByEmail(email);
@@ -67,7 +74,7 @@ public class CustomerController {
         {
             return new ResponseEntity<ResponseDto>(new ResponseDto(false, "Customer with email = " + email + " is not available", null), HttpStatus.NOT_FOUND);
         }
-        var result = customerService.deleteCustomerByEmail(email);
+        var result = customerService.deactivateCustomerByEmail(email);
         return new ResponseEntity<String>(result, HttpStatus.NO_CONTENT);
     }
 }

@@ -41,12 +41,15 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/users/authenticate",
                                 "/users/add",
-                                "/users/ping"
+                                "/users/ping",
+                                "/customers"
                         ).permitAll()
 //                        .requestMatchers("/users/admin").hasAuthority(UserType.ADMIN.getType())
 //                        .requestMatchers("/users/client")
 //                            .hasAnyAuthority(UserType.ADMIN.getType(), UserType.CLIENT.getType())
                         .requestMatchers(
+                                "/users/**",
+                                "/customers/**",
                                 "/products/**",
                                 "/reservations/**",
                                 "/items/**"
