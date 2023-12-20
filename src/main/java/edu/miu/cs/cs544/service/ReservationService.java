@@ -56,6 +56,7 @@ public class ReservationService {
         reservationDTO.getItems().forEach(itemDTO ->{
             if (itemDTO.getId() != null) {
                 Item item = itemRepository.findById(itemDTO.getId()).orElseThrow(() -> new IllegalArgumentException("Item does not exist"));
+                reservationValidation.validateDates(itemDTO.getCheckinDate(), itemDTO.getCheckoutDate());
                 item.setCheckinDate(LocalDate.parse(itemDTO.getCheckinDate()));
                 item.setCheckoutDate(LocalDate.parse(itemDTO.getCheckoutDate()));
                 item.setOccupants(itemDTO.getOccupants());
