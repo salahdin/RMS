@@ -23,6 +23,7 @@ public class State {
 	@Embedded
 	private AuditData auditData;
 
+	@JsonIgnore
 	@ManyToOne
 	private Country country;
 

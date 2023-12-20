@@ -33,11 +33,11 @@ public class Customer extends AbstractEntity {
 	@JoinColumn(name="user_id")
 	private User user;
 
-	@ManyToOne(cascade = CascadeType.PERSIST)
+	@ManyToOne(cascade = CascadeType.PERSIST, fetch=FetchType.EAGER)
 	@JoinColumn(name="billing_address_id")
 	private Address billingAddress;
 
-	@ManyToOne(cascade = CascadeType.PERSIST)
+	@ManyToOne(cascade = CascadeType.PERSIST, fetch=FetchType.EAGER)
 	@JoinColumn(name="physical_address_id")
 	private Address physicalAddress;
 

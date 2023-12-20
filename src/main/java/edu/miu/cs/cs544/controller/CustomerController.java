@@ -1,5 +1,6 @@
 package edu.miu.cs.cs544.controller;
 
+import edu.miu.cs.cs544.dto.AddressDTO;
 import edu.miu.cs.cs544.dto.CustomerDTO;
 import edu.miu.cs.cs544.dto.ResponseDto;
 import edu.miu.cs.cs544.service.CustomerService;
@@ -20,14 +21,31 @@ public class CustomerController {
     @Autowired
     CustomerService customerService;
 
-
     @GetMapping
     public ResponseEntity<?> getCustomers(){
         return new ResponseEntity<List<CustomerDTO>>(customerService.getAllCustomers(), HttpStatus.OK);
     }
+
     @PostMapping
     public ResponseEntity<?> addCustomer(@RequestBody CustomerDTO customerDTO){
-        return new ResponseEntity<CustomerDTO>(customerService.addCustomer(customerDTO), HttpStatus.OK);
+        try{
+            var result = customerService.addCustomer(customerDTO);
+            return new ResponseEntity<ResponseDto>(
+                    new ResponseDto(
+                        true,
+                        "Customer added successfully",
+                        result
+                    ), HttpStatus.OK);
+        }
+        catch (Exception ex)
+        {
+            return new ResponseEntity<ResponseDto>(
+                new ResponseDto(
+                        true,
+                        ex.getMessage(),
+                        null
+                ), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/email/{email}")
@@ -55,26 +73,105 @@ public class CustomerController {
     }
 
     // more to implement: update name(s) / addresses
-
-    ///@PreAuthorize("hasAnyAuthority('ADMIN','CLIENT')")
     @PutMapping("/email/{email}")
     @PreAuthorize("hasAnyAuthority('ADMIN','CLIENT')")
-    public ResponseEntity<?> updateCustomerByEmail(@RequestBody CustomerDTO customerDTO){
-        //return new ResponseEntity<String>("result", HttpStatus.OK );
-        var result = customerService.updateCustomerNamesByEmail(customerDTO);
-        return new ResponseEntity<CustomerDTO>(result, HttpStatus.OK );
+    public ResponseEntity<?> updateCustomerByEmail(@PathVariable String email, @RequestBody CustomerDTO customerDTO){
+       try {
+           var result = customerService.updateCustomerNamesByEmail(email, customerDTO);
+           return new ResponseEntity<ResponseDto>(
+                   new ResponseDto(
+                           true,
+                           "Update for user [" + customerDTO.getEmail() + "] successfully",
+                           result
+                   )
+                   , HttpStatus.OK);
+       }
+       catch (Exception ex)
+       {
+           return new ResponseEntity<ResponseDto>(
+                   new ResponseDto(
+                           false,
+                           "Update for user[" + customerDTO.getEmail() + "] has error: " + ex.getMessage(),
+                           null
+                   )
+                   , HttpStatus.BAD_REQUEST);
+       }
+    }
 
+    @PutMapping("/billing/{email}")
+    @PreAuthorize("hasAnyAuthority('ADMIN','CLIENT')")
+    public ResponseEntity<?> updateCustomerBillingByEmail(@PathVariable("email") String email, @RequestBody AddressDTO addressDTO){
+        try {
+            var result = customerService.updateCustomerBillingAddressByEmail(email, addressDTO);
+            return new ResponseEntity<ResponseDto>(
+                    new ResponseDto(
+                            true,
+                            "Update for user [" + email + "] successfully",
+                            result
+                    )
+                    , HttpStatus.OK);
+        }
+        catch (Exception ex)
+        {
+            return new ResponseEntity<ResponseDto>(
+                    new ResponseDto(
+                            false,
+                            "Update for user[" + email + "] has error: " + ex.getMessage(),
+                            null
+                    )
+                    , HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("/physical/{email}")
+    @PreAuthorize("hasAnyAuthority('ADMIN','CLIENT')")
+    public ResponseEntity<?> updateCustomerPhysicalAddressByEmail(@PathVariable("email") String email,
+                                                                  @RequestBody AddressDTO addressDTO){
+        try {
+            var result = customerService.updateCustomerPhysicalAddressByEmail(email, addressDTO);
+            return new ResponseEntity<ResponseDto>(
+                    new ResponseDto(
+                            true,
+                            "Update for user [" + email + "] successfully",
+                            result
+                    )
+                    , HttpStatus.OK);
+        }
+        catch (Exception ex)
+        {
+            return new ResponseEntity<ResponseDto>(
+                    new ResponseDto(
+                            false,
+                            "Update for user[" + email + "] has error: " + ex.getMessage(),
+                            null
+                    )
+                    , HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping("/deactivate/{email}")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> deactivateCustomerByEmail(@PathVariable("email") String email){
-        var customer = customerService.getCustomerByEmail(email);
-        if(customer == null)
-        {
-            return new ResponseEntity<ResponseDto>(new ResponseDto(false, "Customer with email = " + email + " is not available", null), HttpStatus.NOT_FOUND);
+        try {
+            var customer = customerService.getCustomerByEmail(email);
+            if (customer == null) {
+                return new ResponseEntity<ResponseDto>(new ResponseDto(false, "Customer with email = " + email + " is not available", null), HttpStatus.NOT_FOUND);
+            }
+            var result = customerService.deactivateCustomerByEmail(email);
+            return new ResponseEntity<>(new ResponseDto(
+                    true,
+                    "Deactivating user [" + email + "] successfully",
+                    result
+            ), HttpStatus.OK);
         }
-        var result = customerService.deactivateCustomerByEmail(email);
-        return new ResponseEntity<String>(result, HttpStatus.NO_CONTENT);
+        catch (Exception ex){
+            return new ResponseEntity<ResponseDto>(
+                    new ResponseDto(
+                            false,
+                            "Deactivating user[" + email + "] has error: " + ex.getMessage(),
+                            null
+                    )
+                    , HttpStatus.BAD_REQUEST);
+        }
     }
 }
