@@ -55,26 +55,55 @@ public class CustomerController {
     }
 
     // more to implement: update name(s) / addresses
-
-    ///@PreAuthorize("hasAnyAuthority('ADMIN','CLIENT')")
     @PutMapping("/email/{email}")
     @PreAuthorize("hasAnyAuthority('ADMIN','CLIENT')")
     public ResponseEntity<?> updateCustomerByEmail(@RequestBody CustomerDTO customerDTO){
         //return new ResponseEntity<String>("result", HttpStatus.OK );
-        var result = customerService.updateCustomerNamesByEmail(customerDTO);
-        return new ResponseEntity<CustomerDTO>(result, HttpStatus.OK );
-
+       try {
+           var result = customerService.updateCustomerNamesByEmail(customerDTO);
+           return new ResponseEntity<ResponseDto>(
+                   new ResponseDto(
+                           true,
+                           "Update for user [" + customerDTO.getEmail() + "] successfully",
+                           result
+                   )
+                   , HttpStatus.OK);
+       }
+       catch (Exception ex)
+       {
+           return new ResponseEntity<ResponseDto>(
+                   new ResponseDto(
+                           false,
+                           "Update for user[" + customerDTO.getEmail() + "] has error: " + ex.getMessage(),
+                           null
+                   )
+                   , HttpStatus.BAD_REQUEST);
+       }
     }
 
     @PutMapping("/deactivate/{email}")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> deactivateCustomerByEmail(@PathVariable("email") String email){
-        var customer = customerService.getCustomerByEmail(email);
-        if(customer == null)
-        {
-            return new ResponseEntity<ResponseDto>(new ResponseDto(false, "Customer with email = " + email + " is not available", null), HttpStatus.NOT_FOUND);
+        try {
+            var customer = customerService.getCustomerByEmail(email);
+            if (customer == null) {
+                return new ResponseEntity<ResponseDto>(new ResponseDto(false, "Customer with email = " + email + " is not available", null), HttpStatus.NOT_FOUND);
+            }
+            var result = customerService.deactivateCustomerByEmail(email);
+            return new ResponseEntity<>(new ResponseDto(
+                    true,
+                    "Deactivating user [" + email + "] successfully",
+                    result
+            ), HttpStatus.OK);
         }
-        var result = customerService.deactivateCustomerByEmail(email);
-        return new ResponseEntity<String>(result, HttpStatus.NO_CONTENT);
+        catch (Exception ex){
+            return new ResponseEntity<ResponseDto>(
+                    new ResponseDto(
+                            false,
+                            "Deactivating user[" + email + "] has error: " + ex.getMessage(),
+                            null
+                    )
+                    , HttpStatus.BAD_REQUEST);
+        }
     }
 }
