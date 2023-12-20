@@ -17,4 +17,6 @@ public class ProductDTO {
     private String excerpt;
 
     private String type;
+
+    private Integer maxOccupancy;
 }

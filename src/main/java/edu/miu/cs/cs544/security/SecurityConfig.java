@@ -46,7 +46,11 @@ public class SecurityConfig {
 //                        .requestMatchers("/users/admin").hasAuthority(UserType.ADMIN.getType())
 //                        .requestMatchers("/users/client")
 //                            .hasAnyAuthority(UserType.ADMIN.getType(), UserType.CLIENT.getType())
-                        .requestMatchers("/users/**").authenticated()
+                        .requestMatchers(
+                                "/products/**",
+                                "/reservations/**",
+                                "/items/**"
+                        ).authenticated()
                 )
                 .sessionManagement(config -> {
                     config.sessionCreationPolicy(SessionCreationPolicy.STATELESS);

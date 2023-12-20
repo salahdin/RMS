@@ -1,11 +1,22 @@
 package edu.miu.cs.cs544.service;
 
-import edu.miu.cs.cs544.adapter.ItemAdaptor;
+import edu.miu.cs.cs544.adapter.ItemAdapter;
 import edu.miu.cs.cs544.adapter.ReservationAdapter;
-import edu.miu.cs.cs544.domain.*;
+import edu.miu.cs.cs544.domain.Customer;
+import edu.miu.cs.cs544.domain.Item;
+import edu.miu.cs.cs544.domain.Product;
+import edu.miu.cs.cs544.domain.Reservation;
 import edu.miu.cs.cs544.domain.enums.ReservationState;
-import edu.miu.cs.cs544.dto.*;
-import edu.miu.cs.cs544.repository.*;
+import edu.miu.cs.cs544.domain.enums.UserType;
+import edu.miu.cs.cs544.dto.ItemDTO;
+import edu.miu.cs.cs544.dto.LoggedInUserDTO;
+import edu.miu.cs.cs544.dto.ReservationDTO;
+import edu.miu.cs.cs544.dto.ResponseDto;
+import edu.miu.cs.cs544.repository.CustomerRepository;
+import edu.miu.cs.cs544.repository.ItemRepository;
+import edu.miu.cs.cs544.repository.ProductRepository;
+import edu.miu.cs.cs544.repository.ReservationRepository;
+import edu.miu.cs.cs544.service.util.SecurityUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,10 +35,7 @@ public class ReservationService {
     private ReservationAdapter reservationAdapter;
 
     @Autowired
-    private ProductService productService;
-
-    @Autowired
-    private ItemAdaptor itemAdaptor;
+    private ItemAdapter itemAdapter;
 
     @Autowired
     private ItemRepository itemRepository;
@@ -35,14 +43,16 @@ public class ReservationService {
     @Autowired
     private CustomerRepository customerRepository;
 
+    @Autowired
+    private ProductRepository productRepository;
+
     public ResponseDto updateReservation(ReservationDTO reservationDTO) {
         Optional<Reservation> reservationOptional = reservationRepository.findById(reservationDTO.getId());
-        if (reservationOptional.isEmpty()) {
-            throw new IllegalArgumentException("Reservation does not exist");
-        }
+        Reservation reservation = reservationOptional.orElseThrow(() -> new IllegalArgumentException("Reservation does not exist"));
 
-        Reservation reservation = reservationAdapter.DtoToEntity(reservationDTO);
+        reservationAdapter.dtoToEntity(reservationDTO);
         reservationRepository.save(reservation);
+
         return ResponseDto.builder()
                 .success(true)
                 .message("Reservation updated successfully")
@@ -52,21 +62,13 @@ public class ReservationService {
 
     @Transactional
     public ResponseDto createReservation(ReservationDTO reservationDTO) {
-        Customer customer = validateCustomer(reservationDTO.getCustomer().getEmail());
-
-        Reservation reservation = new Reservation();
-        reservation.setCustomer(customer);
-        reservation.setReservationState(ReservationState.NEW);
+        Customer customer = validateCustomer(reservationDTO.getCustomerEmail());
+        checkAuthorization(customer);
+        Reservation reservation = createNewReservation(customer);
 
         for (ItemDTO itemDTO : reservationDTO.getItems()) {
-            Product product = validateProduct(itemDTO.getProduct().getId());
-            validateProductAvailability(product.getId(), itemDTO.getCheckinDate(), itemDTO.getCheckoutDate());
-
-            Item item = itemAdaptor.DtoToEntity(itemDTO);
-            item.setProduct(product);
-            item.setReservation(reservation);
-            itemRepository.save(item);
-            reservation.addItem(item);
+            validateDates(itemDTO.getCheckinDate(), itemDTO.getCheckoutDate());
+            createAndAddItemToReservation(itemDTO, reservation);
         }
 
         reservationRepository.save(reservation);
@@ -78,17 +80,45 @@ public class ReservationService {
                 .build();
     }
 
-    public void addItemToReservation(Integer reservationId, Item item) {
-        Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() -> new IllegalArgumentException("Invalid reservation id"));
-        reservation.getItems().add(item);
+    private void checkAuthorization(Customer customer) {
+
+        LoggedInUserDTO loggedInUserDTO = SecurityUtils.getLoggedInUser();
+        if (loggedInUserDTO == null) {
+            throw new IllegalArgumentException("User is not logged in");
+        }
+
+        if (loggedInUserDTO.getRole() == UserType.CLIENT && !loggedInUserDTO.getName().equals(customer.getEmail())) {
+            throw new IllegalArgumentException("User is not authorized to create a reservation for this customer");
+        }
     }
 
+    private Reservation createNewReservation(Customer customer) {
+        Reservation reservation = new Reservation();
+        reservation.setCustomer(customer);
+        reservation.setReservationState(ReservationState.NEW);
+        return reservation;
+    }
+
+    private void createAndAddItemToReservation(ItemDTO itemDTO, Reservation reservation) {
+        Product product = validateProduct(itemDTO.getProduct().getId());
+        validateProductAvailability(product.getId(), itemDTO.getCheckinDate(), itemDTO.getCheckoutDate());
+
+        if (product.getMaxOccupancy() < itemDTO.getOccupants()) {
+            throw new IllegalArgumentException("Requested occupancy exceeds max occupancy");
+        }
+
+        Item item = itemAdapter.dtoToEntity(itemDTO);
+        item.setProduct(product);
+        item.setReservation(reservation);
+        itemRepository.save(item);
+        reservation.addItem(item);
+    }
 
     public ResponseDto getAllReservations() {
         List<ReservationDTO> reservations = reservationAdapter.entityToDTOAll(reservationRepository.findAll());
         return ResponseDto.builder()
                 .success(true)
-                .message("Reservation fetched successfully")
+                .message("Reservations fetched successfully")
                 .data(reservations)
                 .build();
     }
@@ -106,11 +136,8 @@ public class ReservationService {
     }
 
     private Product validateProduct(Integer productId) {
-        Product product = productService.getProductById(productId);
-        if (product == null) {
-            throw new IllegalArgumentException("Product does not exist");
-        }
-        return product;
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("Product does not exist"));
     }
 
     private void validateProductAvailability(Integer productId, String checkinDate, String checkoutDate) {
@@ -119,4 +146,36 @@ public class ReservationService {
         }
     }
 
+    private void validateDates(String checkinDate, String checkoutDate) {
+        LocalDate checkin = LocalDate.parse(checkinDate);
+        LocalDate checkout = LocalDate.parse(checkoutDate);
+
+        if (!checkin.isBefore(checkout)) {
+            throw new IllegalArgumentException("Check-in date must be before check-out date");
+        }
+    }
+
+    public ResponseDto cancelReservation(Integer id) {
+        Optional<Reservation> reservationOptional = reservationRepository.findById(id);
+
+        if(reservationOptional.isEmpty())
+            throw new IllegalArgumentException("Reservation does not exist");
+
+        Reservation reservation = reservationOptional.get();
+        reservation.getItems().forEach(item ->{
+            if(item.getCheckinDate().minusDays(7).isBefore(LocalDate.now()))
+                throw new IllegalArgumentException("Reservation cannot be cancelled");
+        });
+
+        checkAuthorization(reservation.getCustomer());
+
+        reservation.setReservationState(ReservationState.CANCELLED);
+        reservationRepository.save(reservation);
+
+        return ResponseDto.builder()
+                .success(true)
+                .message("Reservation cancelled successfully")
+                .data(reservationAdapter.entityToDTO(reservation))
+                .build();
+    }
 }
