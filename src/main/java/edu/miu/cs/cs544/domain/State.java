@@ -40,4 +40,11 @@ public class State {
 		this.name = name;
 		this.country = country;
 	}
+
+	public State(Integer id, String code, String name, Country country) {
+		this.id = id;
+		this.code = code;
+		this.name = name;
+		this.country = country;
+	}
 }

@@ -20,6 +20,11 @@ public class StateAdapter {
     public State dtoToEntity(StateDTO stateDTO){
         return new State(stateDTO.getId(), stateDTO.getCode(), stateDTO.getName(), stateDTO.getCountry());
     }
+
+    public State dtoToEntity(Integer id, StateDTO stateDTO){
+        return new State(id, stateDTO.getCode(), stateDTO.getName(), stateDTO.getCountry());
+    }
+
     public List<State> dtoToEntityAll(List<StateDTO> stateDTOS){
         return stateDTOS.stream().map(stateDTO -> dtoToEntity(stateDTO)).collect(Collectors.toList());
     }
