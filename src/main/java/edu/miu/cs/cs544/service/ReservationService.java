@@ -63,12 +63,11 @@ public class ReservationService {
     @Transactional
     public ResponseDto createReservation(ReservationDTO reservationDTO) {
         Customer customer = validateCustomer(reservationDTO.getCustomerEmail());
-        LoggedInUserDTO loggedInUserDTO = SecurityUtils.getLoggedInUser();
-        checkAuthorization(loggedInUserDTO, customer);
-
+        checkAuthorization(customer);
         Reservation reservation = createNewReservation(customer);
 
         for (ItemDTO itemDTO : reservationDTO.getItems()) {
+            validateDates(itemDTO.getCheckinDate(), itemDTO.getCheckoutDate());
             createAndAddItemToReservation(itemDTO, reservation);
         }
 
@@ -81,7 +80,9 @@ public class ReservationService {
                 .build();
     }
 
-    private void checkAuthorization(LoggedInUserDTO loggedInUserDTO, Customer customer) {
+    private void checkAuthorization(Customer customer) {
+
+        LoggedInUserDTO loggedInUserDTO = SecurityUtils.getLoggedInUser();
         if (loggedInUserDTO == null) {
             throw new IllegalArgumentException("User is not logged in");
         }
@@ -143,5 +144,38 @@ public class ReservationService {
         if (isProductReservedDuringStay(productId, checkinDate, checkoutDate)) {
             throw new IllegalArgumentException("Product is already reserved on this date");
         }
+    }
+
+    private void validateDates(String checkinDate, String checkoutDate) {
+        LocalDate checkin = LocalDate.parse(checkinDate);
+        LocalDate checkout = LocalDate.parse(checkoutDate);
+
+        if (!checkin.isBefore(checkout)) {
+            throw new IllegalArgumentException("Check-in date must be before check-out date");
+        }
+    }
+
+    public ResponseDto cancelReservation(Integer id) {
+        Optional<Reservation> reservationOptional = reservationRepository.findById(id);
+
+        if(reservationOptional.isEmpty())
+            throw new IllegalArgumentException("Reservation does not exist");
+
+        Reservation reservation = reservationOptional.get();
+        reservation.getItems().forEach(item ->{
+            if(item.getCheckinDate().minusDays(7).isBefore(LocalDate.now()))
+                throw new IllegalArgumentException("Reservation cannot be cancelled");
+        });
+
+        checkAuthorization(reservation.getCustomer());
+
+        reservation.setReservationState(ReservationState.CANCELLED);
+        reservationRepository.save(reservation);
+
+        return ResponseDto.builder()
+                .success(true)
+                .message("Reservation cancelled successfully")
+                .data(reservationAdapter.entityToDTO(reservation))
+                .build();
     }
 }
