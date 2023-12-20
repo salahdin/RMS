@@ -4,6 +4,7 @@ import edu.miu.cs.cs544.adapter.ItemAdapter;
 import edu.miu.cs.cs544.adapter.ReservationAdapter;
 import edu.miu.cs.cs544.domain.Customer;
 import edu.miu.cs.cs544.domain.Reservation;
+import edu.miu.cs.cs544.domain.enums.ReservationState;
 import edu.miu.cs.cs544.dto.CustomerDTO;
 import edu.miu.cs.cs544.dto.ItemDTO;
 import edu.miu.cs.cs544.dto.ReservationDTO;
@@ -16,12 +17,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 
@@ -51,6 +55,7 @@ class ReservationServiceTest {
     private CustomerRepository customerRepository;
 
     @Test
+    @WithMockUser(username = "admin", authorities = {"ADMIN"})
     void updateReservation_validReservationDetails_reservationUpdated() {
         // Arrange
         Customer customer = new Customer();
@@ -80,6 +85,7 @@ class ReservationServiceTest {
     }
 
     @Test
+    @WithMockUser(username = "admin", authorities = {"ADMIN"})
     void createReservation_validReservationDetails_reservationCreated() {
         // Arrange
         CustomerDTO customer = new CustomerDTO();
@@ -110,6 +116,29 @@ class ReservationServiceTest {
         assertTrue(responseDto.isSuccess());
         assertEquals("Reservation created successfully", responseDto.getMessage());
         assertEquals(reservationDTO, responseDto.getData());
+    }
+
+    @Test
+    @WithMockUser(username = "admin", authorities = {"ADMIN"})
+    void cancelReservation_validReservation_reservationCancelled() {
+        // Arrange
+        Integer reservationId = 1;
+        Reservation reservation = new Reservation();
+        reservation.setId(reservationId);
+        reservation.setReservationState(ReservationState.NEW);
+
+        when(reservationRepository.findById(reservationId)).thenReturn(Optional.of(reservation));
+
+        // Act
+        ResponseDto responseDto = reservationService.cancelReservation(reservationId);
+
+        // Assert
+        verify(reservationRepository).save(argThat(savedReservation ->
+                savedReservation.getReservationState() == ReservationState.CANCELLED));
+
+        assertTrue(responseDto.isSuccess());
+        assertEquals("Reservation cancelled successfully", responseDto.getMessage());
+        assertEquals(reservationAdapter.entityToDTO(reservation), responseDto.getData());
     }
 
     @Test
