@@ -34,7 +34,6 @@ public class ReservationController {
 
     @GetMapping("/customer/{customerId}")
     public ResponseEntity<?> getAllReservationsByCustomerId(@PathVariable Integer customerId) {
-
         return ResponseEntity.ok().body(reservationRepository.findAllByCustomerId(customerId));
     }
 

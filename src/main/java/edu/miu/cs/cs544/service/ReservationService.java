@@ -53,6 +53,19 @@ public class ReservationService {
         Optional<Reservation> reservationOptional = reservationRepository.findById(reservationDTO.getId());
         Reservation reservation = reservationOptional.orElseThrow(() -> new IllegalArgumentException("Reservation does not exist"));
 
+        reservationDTO.getItems().forEach(itemDTO ->{
+            if (itemDTO.getId() != null) {
+                Item item = itemRepository.findById(itemDTO.getId()).orElseThrow(() -> new IllegalArgumentException("Item does not exist"));
+                item.setCheckinDate(LocalDate.parse(itemDTO.getCheckinDate()));
+                item.setCheckoutDate(LocalDate.parse(itemDTO.getCheckoutDate()));
+                item.setOccupants(itemDTO.getOccupants());
+                itemRepository.save(item);
+            }
+            else {
+                createAndAddItemToReservation(itemDTO, reservation);
+            }
+        });
+
         reservationAdapter.dtoToEntity(reservationDTO);
         reservationRepository.save(reservation);
 
@@ -71,6 +84,7 @@ public class ReservationService {
 
         for (ItemDTO itemDTO : reservationDTO.getItems()) {
             reservationValidation.validateDates(itemDTO.getCheckinDate(), itemDTO.getCheckoutDate());
+            reservationValidation.validateProductAvailability(itemDTO.getProduct().getId(), itemDTO.getCheckinDate(), itemDTO.getCheckoutDate());
             createAndAddItemToReservation(itemDTO, reservation);
         }
 
@@ -92,8 +106,6 @@ public class ReservationService {
 
     private void createAndAddItemToReservation(ItemDTO itemDTO, Reservation reservation) {
         Product product = productValidation.validateProduct(itemDTO.getProduct().getId());
-        reservationValidation.validateProductAvailability(product.getId(), itemDTO.getCheckinDate(), itemDTO.getCheckoutDate());
-
         if (product.getMaxOccupancy() < itemDTO.getOccupants()) {
             throw new IllegalArgumentException("Requested occupancy exceeds max occupancy");
         }

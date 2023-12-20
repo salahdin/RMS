@@ -14,11 +14,10 @@ public class ItemAdapter {
 
     public ItemDTO entityToDTO(Item item){
         ItemDTO itemDTO = new ItemDTO();
+        itemDTO.setId(item.getId());
         itemDTO.setCheckinDate(item.getCheckinDate().toString());
         itemDTO.setCheckoutDate(item.getCheckoutDate().toString());
         itemDTO.setOccupants(item.getOccupants());
-       //TODO: add products
-        itemDTO.setProduct(null);
 
         return itemDTO;
     }
