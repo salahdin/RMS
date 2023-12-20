@@ -24,8 +24,8 @@ public class CustomerDTO {
     List<Reservation> reservations = new ArrayList<>();
     private UserDTO userDTO;
     //
-    private Address billingAddress;
-    private Address physicalAddress;
+    private AddressDTO billingAddress;
+    private AddressDTO physicalAddress;
 
     public CustomerDTO(String firstName, String lastName, String email, UserDTO userDTO)
     {
@@ -37,12 +37,15 @@ public class CustomerDTO {
 
     public CustomerDTO(String firstName, String lastName,
                        String email, UserDTO userDTO,
-                       Address billingAddress, Address physicalAddress)
+                       AddressDTO  billingAddress, AddressDTO physicalAddress)
     {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.userDTO = userDTO;
+        this.billingAddress = billingAddress;
+        this.physicalAddress = physicalAddress;
     }
+
 }
 

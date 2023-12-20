@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -41,12 +42,21 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/users/authenticate",
                                 "/users/add",
-                                "/users/ping"
+                                "/users/ping",
+                                "/customers"
                         ).permitAll()
+                                .requestMatchers(HttpMethod.GET, "/countries/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/states/**").permitAll()
+                                .requestMatchers("/countries/**").authenticated()
+                                .requestMatchers("/states/**").authenticated()
+
+
 //                        .requestMatchers("/users/admin").hasAuthority(UserType.ADMIN.getType())
 //                        .requestMatchers("/users/client")
 //                            .hasAnyAuthority(UserType.ADMIN.getType(), UserType.CLIENT.getType())
                         .requestMatchers(
+                                "/users/**",
+                                "/customers/**",
                                 "/products/**",
                                 "/payments/**",
                                 "/reservations/**",

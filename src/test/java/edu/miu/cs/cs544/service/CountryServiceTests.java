@@ -1,4 +1,4 @@
-package edu.miu.cs.cs544.cs544;
+package edu.miu.cs.cs544.service;
 
 import edu.miu.cs.cs544.domain.Country;
 import edu.miu.cs.cs544.dto.CountryDTO;
@@ -30,7 +30,7 @@ public class CountryServiceTests {
             return new CountryServiceImpl();
         }
     }
-    @Autowired
+    //@Autowired
     private CountryService countryService;
     @MockBean
     private CountryRepository countryRepository;
@@ -39,7 +39,7 @@ public class CountryServiceTests {
     public void setUp() {
 
         Long countryId = 123L;
-        Country country = new Country(countryId,"USA", "United States of America",339 );
+        Country country = new Country("USA", "United States of America",339 );
         Optional<Country> countryOptional = Optional.of(country);
 
         Mockito.when(countryRepository.findById(countryId)).thenReturn(countryOptional);

@@ -1,17 +1,14 @@
 package edu.miu.cs.cs544.service.impl;
 
-import edu.miu.cs.cs544.adapter.CountryAdapter;
 import edu.miu.cs.cs544.adapter.StateAdapter;
-import edu.miu.cs.cs544.domain.Country;
 import edu.miu.cs.cs544.domain.State;
-import edu.miu.cs.cs544.dto.CountryDTO;
 import edu.miu.cs.cs544.dto.StateDTO;
-import edu.miu.cs.cs544.repository.CountryRepository;
 import edu.miu.cs.cs544.repository.StateRepository;
 import edu.miu.cs.cs544.service.StateService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,19 +19,23 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class StateServiceImpl implements StateService {
 
+    @Autowired
     private final StateAdapter stateAdapter;
 
+    @Autowired
     private final StateRepository stateRepository;
 
     @Override
-    public StateDTO addCountry(StateDTO stateDTO) {
+    public StateDTO addState(StateDTO stateDTO) {
         try {
-            stateRepository.save(stateAdapter.dtoToEntity(stateDTO));
-            return stateDTO;
+            State state = stateAdapter.dtoToEntity(stateDTO);
+            State stateResponse = stateRepository.save(state);
+            return stateAdapter.entityToDto(stateResponse);
         }catch (RuntimeException e){
-            throw new RuntimeException("Failed to add this country");
+            throw new RuntimeException("Failed to add this state");
         }
     }
+
     @Override
     public List<StateDTO> findAllStates() {
         return stateAdapter.entityToDtoAll(stateRepository.findAll());
@@ -46,14 +47,22 @@ public class StateServiceImpl implements StateService {
         return stateAdapter.entityToDto(state);
     }
     @Override
-    public StateDTO updateState(StateDTO locationDTO) {
+    public StateDTO updateState(Integer id, StateDTO stateDTO) {
         try {
-            stateRepository.save(stateAdapter.dtoToEntity(locationDTO));
-            return locationDTO;
+            Optional<State> state = stateRepository.findById(id);
+            if (state.isPresent()) {
+                State stateEntity = stateAdapter.dtoToEntity(stateDTO);
+                stateEntity.setId(id);
+                State stateResponse = stateRepository.save(stateEntity);
+                return stateAdapter.entityToDto(stateResponse);
+            } else {
+                throw new EntityNotFoundException("State with id " + id + " not found");
+            }
         }catch (RuntimeException e){
             throw new RuntimeException("Failed to update this state");
         }
     }
+
     @Override
     public String deleteById(Integer id) {
         try {
