@@ -90,7 +90,7 @@ public class CountryControllerTest {
                         .content(asJsonString(countryDTO))
                         .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isOk());
-        verify(countryService, times(1)).updateCountry(countryDTO);
+        verify(countryService, times(1)).updateCountry(123L, countryDTO);
     }
 
 //    @Test public void testDeleteCountryById() throws Exception {

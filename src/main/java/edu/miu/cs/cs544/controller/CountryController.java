@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -23,6 +24,7 @@ public class CountryController {
     private CountryService countryService;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> addCountry(@RequestBody CountryDTO countryDTO){
         CountryDTO country = countryService.addCountry(countryDTO);
         return new ResponseEntity<>(country, HttpStatus.OK);
@@ -33,18 +35,21 @@ public class CountryController {
         return new ResponseEntity<List<CountryDTO>>(countryService.findAllCountries(), HttpStatus.OK);
     }
 
-    @GetMapping("/{country_id}")
-    public ResponseEntity<?> getCountry(@PathVariable Long country_id){
-        return new ResponseEntity<CountryDTO>(countryService.findById(country_id), HttpStatus.OK);
+    @GetMapping("/{countryId}")
+    public ResponseEntity<?> getCountry(@PathVariable Long countryId){
+        return new ResponseEntity<CountryDTO>(countryService.findById(countryId), HttpStatus.OK);
     }
 
-    @PutMapping
-    public ResponseEntity<?> updateCountry(@Valid @RequestBody CountryDTO countryDTO){
-        return new ResponseEntity<CountryDTO>(countryService.updateCountry(countryDTO), HttpStatus.OK);
+    @PutMapping("/{countryId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<?> updateCountry(@PathVariable("countryId") Long countryId, @RequestBody CountryDTO countryDTO){
+        CountryDTO countryDTOResponse = countryService.updateCountry(countryId, countryDTO);
+        return new ResponseEntity<CountryDTO>(countryDTOResponse, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{country_id}")
-    public ResponseEntity<?> deleteCountry(@PathVariable Long country_id){
-        return new ResponseEntity<String>(countryService.deleteById(country_id), HttpStatus.OK);
+    @DeleteMapping("/{countryId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<?> deleteCountry(@PathVariable Long countryId){
+        return new ResponseEntity<String>(countryService.deleteById(countryId), HttpStatus.OK);
     }
 }

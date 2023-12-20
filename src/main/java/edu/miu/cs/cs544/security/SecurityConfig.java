@@ -45,7 +45,11 @@ public class SecurityConfig {
                                 "/users/ping"
                         ).permitAll()
                                 .requestMatchers(HttpMethod.GET, "/countries/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/states/**").permitAll()
                                 .requestMatchers("/countries/**").authenticated()
+                                .requestMatchers("/states/**").authenticated()
+
+
 //                        .requestMatchers("/users/admin").hasAuthority(UserType.ADMIN.getType())
 //                        .requestMatchers("/users/client")
 //                            .hasAnyAuthority(UserType.ADMIN.getType(), UserType.CLIENT.getType())

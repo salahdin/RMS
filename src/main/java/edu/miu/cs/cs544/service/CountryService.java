@@ -13,6 +13,6 @@ public interface CountryService {
     public CountryDTO addCountry(CountryDTO countryDTO);
     public List<CountryDTO> findAllCountries();
     public CountryDTO findById(Long id);
-    public CountryDTO updateCountry(CountryDTO countryDTO);
+    public CountryDTO updateCountry(Long id, CountryDTO countryDTO);
     public String deleteById(Long id);
 }

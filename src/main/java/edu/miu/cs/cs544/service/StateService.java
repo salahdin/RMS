@@ -9,9 +9,8 @@ import java.util.List;
 public interface StateService {
 
     public StateDTO addState(StateDTO stateDTO);
-    public State addState(State state);
     public List<StateDTO> findAllStates();
     public StateDTO findById(Integer id);
-    public StateDTO updateState(StateDTO stateDTO);
+    public StateDTO updateState(Integer id, StateDTO stateDTO);
     public String deleteById(Integer id);
 }

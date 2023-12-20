@@ -1,13 +1,11 @@
 package edu.miu.cs.cs544.controller;
 
-import edu.miu.cs.cs544.domain.State;
-import edu.miu.cs.cs544.dto.CountryDTO;
 import edu.miu.cs.cs544.dto.StateDTO;
-import edu.miu.cs.cs544.service.CountryService;
 import edu.miu.cs.cs544.service.StateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -21,24 +19,31 @@ public class StateController {
     private StateService stateService;
 
     @PostMapping
-    public ResponseEntity<?> addState(@RequestBody State state){
-        return new ResponseEntity<State>(stateService.addState(state), HttpStatus.OK);
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<?> addState(@Valid @RequestBody StateDTO stateDTO){
+        return new ResponseEntity<>(stateService.addState(stateDTO), HttpStatus.OK);
     }
+
     @GetMapping
     public ResponseEntity<?> getAllStates(){
         return new ResponseEntity<List<StateDTO>>( stateService.findAllStates(), HttpStatus.OK);
     }
-    @GetMapping("/{state_id}")
-    public ResponseEntity<?> getState(@PathVariable Integer state_id){
-        return new ResponseEntity<StateDTO>(stateService.findById(state_id), HttpStatus.OK);
+
+    @GetMapping("/{stateId}")
+    public ResponseEntity<?> getState(@PathVariable Integer stateId){
+        return new ResponseEntity<StateDTO>(stateService.findById(stateId), HttpStatus.OK);
     }
-    @PutMapping
-    public ResponseEntity<?> updateState(@Valid @RequestBody StateDTO stateDTO){
-        return new ResponseEntity<StateDTO>(stateService.updateState(stateDTO), HttpStatus.OK);
+
+    @PutMapping("/{stateId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<?> updateState(@PathVariable Integer stateId, @Valid @RequestBody StateDTO stateDTO){
+        return new ResponseEntity<StateDTO>(stateService.updateState(stateId, stateDTO), HttpStatus.OK);
     }
-    @DeleteMapping("/{state_id}")
-    public ResponseEntity<?> deleteState(@PathVariable Integer state_id){
-        return new ResponseEntity<String>(stateService.deleteById(state_id), HttpStatus.OK);
+
+    @DeleteMapping("/{stateId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<?> deleteState(@PathVariable Integer stateId){
+        return new ResponseEntity<String>(stateService.deleteById(stateId), HttpStatus.OK);
     }
 
 }

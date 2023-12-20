@@ -17,6 +17,7 @@ public class Country {
 	@GeneratedValue
 	private Long id;
 
+	@Column(unique=true)
 	private String code;
 	
 	private String name;
@@ -24,7 +25,7 @@ public class Country {
 	private Integer population;
 
 	@JsonIgnore
-	@OneToMany(mappedBy = "country", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "country")
 	private List<State> states = new ArrayList<>() ;
 
 	@Embedded

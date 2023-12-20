@@ -23,20 +23,17 @@ public class State {
 	@Embedded
 	private AuditData auditData;
 
-	@JsonIgnore
 	@ManyToOne
 	private Country country;
 
 	public State(String code, String name, AuditData auditData, Country country) {
 		this.code = code;
 		this.name = name;
-		//
 		this.auditData = auditData;
 		this.country = country;
 	}
 
-	public State(Integer id, String code, String name, Country country) {
-		this.id = id;
+	public State(String code, String name, Country country) {
 		this.code = code;
 		this.name = name;
 		this.country = country;

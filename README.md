@@ -73,6 +73,11 @@ Permit or, authenticate endpoints with `requestMatchers` inside `SecurityFilterC
 
 ```
 
+### Refs:
+- https://www.youtube.com/watch?v=R76S0tfv36w
+- https://www.youtube.com/watch?v=NcLtLZqGu2M
+- https://github.com/Java-Techie-jt/spring-boot3-jwt
+
 ## Run project in Docker
 1. Go to project directory
 2. Build project:
