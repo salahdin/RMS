@@ -21,8 +21,8 @@ public class CustomerValidation {
             throw new IllegalArgumentException("User is not logged in");
         }
 
-        if (loggedInUserDTO.getRole() == UserType.CLIENT && !loggedInUserDTO.getName().equals(customer.getEmail())) {
-            throw new IllegalArgumentException("User is not authorized to create a reservation for this customer");
+        if (loggedInUserDTO.getRole() == UserType.CLIENT && !loggedInUserDTO.getName().equals(customer.getUser().getUserName())) {
+            throw new IllegalArgumentException("User is not authorized to perform this action");
         }
     }
 

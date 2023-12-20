@@ -52,7 +52,8 @@ public class ReservationService {
     public ResponseDto updateReservation(ReservationDTO reservationDTO) {
         Optional<Reservation> reservationOptional = reservationRepository.findById(reservationDTO.getId());
         Reservation reservation = reservationOptional.orElseThrow(() -> new IllegalArgumentException("Reservation does not exist"));
-
+        customerValidation.checkAuthorization(reservation.getCustomer());
+        
         reservationDTO.getItems().forEach(itemDTO ->{
             if (itemDTO.getId() != null) {
                 Item item = itemRepository.findById(itemDTO.getId()).orElseThrow(() -> new IllegalArgumentException("Item does not exist"));
