@@ -10,15 +10,24 @@ import java.util.stream.Collectors;
 @Component
 public class CountryAdapter {
     public CountryDTO entityToDto(Country country){
-        return new CountryDTO(country.getId(), country.getCode(), country.getName(), country.getPopulation(), country.getStates());
+        return new CountryDTO(
+                country.getId(),
+                country.getCode(),
+                country.getName(),
+                country.getPopulation()
+        );
     }
     public List<CountryDTO> entityToDtoAll(List<Country> countries){
-        return countries.stream().map(country -> entityToDto(country)).collect(Collectors.toList());
+        return countries.stream().map(this::entityToDto).collect(Collectors.toList());
     }
     public Country dtoToEntity(CountryDTO countryDTO){
-        return new Country(countryDTO.getId(), countryDTO.getCode(), countryDTO.getName(), countryDTO.getPopulation(), countryDTO.getStates());
+        return new Country(
+                countryDTO.getCode(),
+                countryDTO.getName(),
+                countryDTO.getPopulation()
+        );
     }
     public List<Country> dtoToEntityAll(List<CountryDTO> countryDTOS){
-        return countryDTOS.stream().map(countryDTO -> dtoToEntity(countryDTO)).collect(Collectors.toList());
+        return countryDTOS.stream().map(this::dtoToEntity).collect(Collectors.toList());
     }
 }

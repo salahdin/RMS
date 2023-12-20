@@ -23,15 +23,17 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CountryServiceImpl implements CountryService {
 
+    @Autowired
     private CountryAdapter countryAdapter;
 
+    @Autowired
     private CountryRepository countryRepository;
 
     @Override
     public CountryDTO addCountry(CountryDTO countryDTO) {
         try {
-            countryRepository.save(countryAdapter.dtoToEntity(countryDTO));
-            return countryDTO;
+            Country country = countryRepository.save(countryAdapter.dtoToEntity(countryDTO));
+            return countryAdapter.entityToDto(country);
         }catch (RuntimeException e){
             throw new RuntimeException("Failed to add this country");
         }
@@ -46,16 +48,19 @@ public class CountryServiceImpl implements CountryService {
             throw new RuntimeException("Failed to add this country");
         }
     }
+
     @Override
     public List<CountryDTO> findAllCountries() {
         return countryAdapter.entityToDtoAll(countryRepository.findAll());
     }
+
     @Override
     public CountryDTO findById(Long id) {
         Optional<Country> countryOptional = countryRepository.findById(id);
         Country country = countryOptional.orElseThrow(() -> new EntityNotFoundException("Location with id " + id + " not found"));
         return countryAdapter.entityToDto(country);
     }
+
     @Override
     public CountryDTO updateCountry(CountryDTO locationDTO) {
         try {
@@ -65,6 +70,7 @@ public class CountryServiceImpl implements CountryService {
             throw new RuntimeException("Failed to update this country");
         }
     }
+
     @Override
     public String deleteById(Long id) {
         try {
@@ -74,7 +80,5 @@ public class CountryServiceImpl implements CountryService {
             throw new EntityNotFoundException("Failed to delete this member");
         }
     }
-
-
 
 }

@@ -23,18 +23,22 @@ public class CountryController {
     private CountryService countryService;
 
     @PostMapping
-    public ResponseEntity<?> addCountry(@RequestBody Country country){
-        return new ResponseEntity<Country>(countryService.addCountry(country), HttpStatus.OK);
+    public ResponseEntity<?> addCountry(@RequestBody CountryDTO countryDTO){
+        System.out.println("CountryDTO: " + countryDTO);
+        CountryDTO country = countryService.addCountry(countryDTO);
+        return new ResponseEntity<>(country, HttpStatus.OK);
     }
 
 //    @PostMapping
 //    public ResponseEntity<?> addCountry(CountryDTO countryDTO){
 //        return new ResponseEntity<CountryDTO>(countryService.addCountry(countryDTO), HttpStatus.OK);
 //    }
+
     @GetMapping
     public ResponseEntity<?> getAllCountries(){
         return new ResponseEntity<List<CountryDTO>>(countryService.findAllCountries(), HttpStatus.OK);
     }
+
     @GetMapping("/{country_id}")
     public ResponseEntity<?> getCountry(@PathVariable Long country_id){
         return new ResponseEntity<CountryDTO>(countryService.findById(country_id), HttpStatus.OK);
@@ -49,6 +53,7 @@ public class CountryController {
     public ResponseEntity<?> updateCountry(@Valid @RequestBody CountryDTO countryDTO){
         return new ResponseEntity<CountryDTO>(countryService.updateCountry(countryDTO), HttpStatus.OK);
     }
+
     @DeleteMapping("/{country_id}")
     public ResponseEntity<?> deleteCountry(@PathVariable Long country_id){
         return new ResponseEntity<String>(countryService.deleteById(country_id), HttpStatus.OK);
