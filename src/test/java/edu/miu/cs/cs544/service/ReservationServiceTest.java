@@ -142,11 +142,4 @@ class ReservationServiceTest {
         assertEquals(reservationAdapter.entityToDTO(reservation), responseDto.getData());
     }
 
-    @Test
-    void addItemToReservation() {
-    }
-
-    @Test
-    void getAllReservations() {
-    }
 }
