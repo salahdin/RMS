@@ -51,6 +51,7 @@ public class SecurityConfig {
                                 "/users/**",
                                 "/customers/**",
                                 "/products/**",
+                                "/payments/**",
                                 "/reservations/**",
                                 "/items/**"
                         ).authenticated()

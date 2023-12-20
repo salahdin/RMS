@@ -31,6 +31,7 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@WithMockUser(username = "admin", authorities = {"ADMIN"})
 class ReservationServiceTest {
 
     @Autowired

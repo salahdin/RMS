@@ -27,6 +27,9 @@ public class Product {
 	@Column(name = "max_occupancy")
 	private Integer maxOccupancy;
 
+	@Column(name = "rate_per_night")
+	private Double ratePerNight;
+
 	@Embedded
 	private AuditData auditData = new AuditData();
 
