@@ -1,5 +1,6 @@
 package edu.miu.cs.cs544.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ public class State {
 	@Embedded
 	private AuditData auditData;
 
+	@JsonIgnore
 	@ManyToOne
 	private Country country;
 
