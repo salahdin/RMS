@@ -24,15 +24,9 @@ public class CountryController {
 
     @PostMapping
     public ResponseEntity<?> addCountry(@RequestBody CountryDTO countryDTO){
-        System.out.println("CountryDTO: " + countryDTO);
         CountryDTO country = countryService.addCountry(countryDTO);
         return new ResponseEntity<>(country, HttpStatus.OK);
     }
-
-//    @PostMapping
-//    public ResponseEntity<?> addCountry(CountryDTO countryDTO){
-//        return new ResponseEntity<CountryDTO>(countryService.addCountry(countryDTO), HttpStatus.OK);
-//    }
 
     @GetMapping
     public ResponseEntity<?> getAllCountries(){
@@ -43,11 +37,6 @@ public class CountryController {
     public ResponseEntity<?> getCountry(@PathVariable Long country_id){
         return new ResponseEntity<CountryDTO>(countryService.findById(country_id), HttpStatus.OK);
     }
-
-//    @PutMapping
-//    public ResponseEntity<?> updateCountry(@Valid @RequestBody Country country){
-//        return new ResponseEntity<CountryDTO>(countryService.updateCountry(country), HttpStatus.OK);
-//    }
 
     @PutMapping
     public ResponseEntity<?> updateCountry(@Valid @RequestBody CountryDTO countryDTO){

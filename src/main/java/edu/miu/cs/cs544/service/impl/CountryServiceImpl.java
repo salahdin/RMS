@@ -7,11 +7,7 @@ import edu.miu.cs.cs544.repository.CountryRepository;
 import edu.miu.cs.cs544.service.CountryService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +16,6 @@ import java.util.Optional;
 
 @Service
 @Transactional
-@RequiredArgsConstructor
 public class CountryServiceImpl implements CountryService {
 
     @Autowired
@@ -34,16 +29,6 @@ public class CountryServiceImpl implements CountryService {
         try {
             Country country = countryRepository.save(countryAdapter.dtoToEntity(countryDTO));
             return countryAdapter.entityToDto(country);
-        }catch (RuntimeException e){
-            throw new RuntimeException("Failed to add this country");
-        }
-    }
-
-    @Override
-    public Country addCountry(Country country) {
-        try {
-            countryRepository.save(country);
-            return  country;
         }catch (RuntimeException e){
             throw new RuntimeException("Failed to add this country");
         }

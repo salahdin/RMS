@@ -51,7 +51,7 @@ public class CountryControllerTest {
 
     @Test
     public void testAddCountry() throws Exception {
-        Country country = new Country(123L, "USA", "United States of America", 339);
+        CountryDTO country = new CountryDTO("USA", "United States of America", 339);
         mock.perform(MockMvcRequestBuilders.post("/countries")
                         .content(asJsonString(country))
                         .contentType(MediaType.APPLICATION_JSON))
