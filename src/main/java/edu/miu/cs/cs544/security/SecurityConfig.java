@@ -46,10 +46,13 @@ public class SecurityConfig {
                         ).permitAll()
 //                        .requestMatchers("/users/admin").hasAuthority(UserType.ADMIN.getType())
 //                        .requestMatchers("/users/client")
-//                        .hasAnyAuthority(UserType.ADMIN.getType(), UserType.CLIENT.getType())
+//                            .hasAnyAuthority(UserType.ADMIN.getType(), UserType.CLIENT.getType())
                         .requestMatchers(
                                 "/users/**",
-                                "/customers/**"
+                                "/customers/**",
+                                "/products/**",
+                                "/reservations/**",
+                                "/items/**"
                         ).authenticated()
                 )
                 .sessionManagement(config -> {

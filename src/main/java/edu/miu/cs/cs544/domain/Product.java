@@ -24,14 +24,17 @@ public class Product {
 	@Enumerated(EnumType.STRING)
 	private ProductType type;
 
+	@Column(name = "max_occupancy")
+	private Integer maxOccupancy;
+
 	@Embedded
 	private AuditData auditData = new AuditData();
 
-	public Product(String name, String description, String excerpt, ProductType type, AuditData auditData) {
+	public Product(String name, String description, String excerpt, ProductType type, Integer maxOccupancy) {
 		this.name = name;
 		this.description = description;
 		this.excerpt = excerpt;
 		this.type = type;
-		this.auditData = auditData;
+		this.maxOccupancy = maxOccupancy;
 	}
 }
