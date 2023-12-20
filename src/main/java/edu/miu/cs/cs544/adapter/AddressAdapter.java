@@ -21,7 +21,7 @@ public class AddressAdapter {
     }
 
     public Address DtoToEntity(AddressDTO address){
-        return new Address(address.getLine1(), address.getLine2(), address.getCity(), address.getPostalCode(), address.getAddressType(), stateAdapter.dtoToEntity(address.getState()));
+        return new Address(address.getLine1(), address.getLine2(), address.getCity(), address.getPostalCode(), address.getAddressType(), stateAdapter.dtoToEntity(address.getState().getId(), address.getState()));
     }
 
 }
