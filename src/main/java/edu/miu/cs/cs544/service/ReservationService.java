@@ -11,7 +11,6 @@ import edu.miu.cs.cs544.dto.ItemDTO;
 import edu.miu.cs.cs544.dto.ReservationDTO;
 import edu.miu.cs.cs544.dto.ResponseDto;
 import edu.miu.cs.cs544.repository.ItemRepository;
-import edu.miu.cs.cs544.repository.ProductRepository;
 import edu.miu.cs.cs544.repository.ReservationRepository;
 import edu.miu.cs.cs544.service.validation.CustomerValidation;
 import edu.miu.cs.cs544.service.validation.ProductValidation;
@@ -55,13 +54,13 @@ public class ReservationService {
         customerValidation.checkAuthorization(reservation.getCustomer());
         
         reservationDTO.getItems().forEach(itemDTO ->{
-            if (itemDTO.getId() != null) {
-                Item item = itemRepository.findById(itemDTO.getId()).orElseThrow(() -> new IllegalArgumentException("Item does not exist"));
+            Optional<Item> item = Optional.ofNullable(itemRepository.findById(itemDTO.getId()).orElseThrow(() -> new IllegalArgumentException("Item does not exist")));
+            if (itemDTO.getId() != null || item.isEmpty()) {
                 reservationValidation.validateDates(itemDTO.getCheckinDate(), itemDTO.getCheckoutDate());
-                item.setCheckinDate(LocalDate.parse(itemDTO.getCheckinDate()));
-                item.setCheckoutDate(LocalDate.parse(itemDTO.getCheckoutDate()));
-                item.setOccupants(itemDTO.getOccupants());
-                itemRepository.save(item);
+                item.get().setCheckinDate(LocalDate.parse(itemDTO.getCheckinDate()));
+                item.get().setCheckoutDate(LocalDate.parse(itemDTO.getCheckoutDate()));
+                item.get().setOccupants(itemDTO.getOccupants());
+                itemRepository.save(item.get());
             }
             else {
                 createAndAddItemToReservation(itemDTO, reservation);

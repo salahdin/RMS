@@ -24,8 +24,6 @@ public class ItemAdapter {
 
     public Item dtoToEntity(ItemDTO itemDTO){
         Item item = new Item();
-        //TODO: add products
-
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         item.setCheckinDate(LocalDate.parse(itemDTO.getCheckinDate(), formatter));
         item.setCheckoutDate(LocalDate.parse(itemDTO.getCheckoutDate(), formatter));
