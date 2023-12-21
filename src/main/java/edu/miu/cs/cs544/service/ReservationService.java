@@ -48,27 +48,31 @@ public class ReservationService {
     private ProductValidation productValidation;
 
 
+    @Transactional
     public ResponseDto updateReservation(ReservationDTO reservationDTO) {
         Optional<Reservation> reservationOptional = reservationRepository.findById(reservationDTO.getId());
         Reservation reservation = reservationOptional.orElseThrow(() -> new IllegalArgumentException("Reservation does not exist"));
         customerValidation.checkAuthorization(reservation.getCustomer());
-        
-        reservationDTO.getItems().forEach(itemDTO ->{
-            Optional<Item> item = Optional.ofNullable(itemRepository.findById(itemDTO.getId()).orElseThrow(() -> new IllegalArgumentException("Item does not exist")));
-            if (itemDTO.getId() != null || item.isEmpty()) {
-                reservationValidation.validateDates(itemDTO.getCheckinDate(), itemDTO.getCheckoutDate());
-                item.get().setCheckinDate(LocalDate.parse(itemDTO.getCheckinDate()));
-                item.get().setCheckoutDate(LocalDate.parse(itemDTO.getCheckoutDate()));
-                item.get().setOccupants(itemDTO.getOccupants());
-                itemRepository.save(item.get());
-            }
-            else {
+
+        reservationDTO.getItems().forEach(itemDTO -> {
+            if (itemDTO.getId() == null) {
                 createAndAddItemToReservation(itemDTO, reservation);
+            } else {
+                Optional<Item> item = itemRepository.findById(itemDTO.getId());
+                if (item.isEmpty()) {
+                    createAndAddItemToReservation(itemDTO, reservation);
+                } else {
+                    reservationValidation.validateDates(itemDTO.getCheckinDate(), itemDTO.getCheckoutDate());
+                    item.get().setCheckinDate(LocalDate.parse(itemDTO.getCheckinDate()));
+                    item.get().setCheckoutDate(LocalDate.parse(itemDTO.getCheckoutDate()));
+                    item.get().setOccupants(itemDTO.getOccupants());
+                    itemRepository.save(item.get());
+                }
             }
         });
 
-        reservationAdapter.dtoToEntity(reservationDTO);
         reservationRepository.save(reservation);
+        reservationDTO.setItems(itemAdapter.entityToDTOAll(reservation.getItems()));
 
         return ResponseDto.builder()
                 .success(true)
@@ -111,7 +115,10 @@ public class ReservationService {
             throw new IllegalArgumentException("Requested occupancy exceeds max occupancy");
         }
 
-        Item item = itemAdapter.dtoToEntity(itemDTO);
+        Item item = new Item();
+        item.setCheckinDate(LocalDate.parse(itemDTO.getCheckinDate()));
+        item.setCheckoutDate(LocalDate.parse(itemDTO.getCheckoutDate()));
+        item.setOccupants(itemDTO.getOccupants());
         item.setProduct(product);
         item.setReservation(reservation);
         itemRepository.save(item);
