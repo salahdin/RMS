@@ -8,6 +8,7 @@ import edu.miu.cs.cs544.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,14 +23,24 @@ public class ReservationController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getReservationById(@PathVariable Integer id) {
-        return reservationRepository.findById(id)
-                .map(reservation -> ResponseEntity.ok().body(reservation))
-                .orElse(ResponseEntity.notFound().build());
+        try {
+            ResponseDto createdReservation = reservationService.getReservationById(id);
+            return new ResponseEntity<>(createdReservation, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     @GetMapping()
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> getAllReservations() {
-        return ResponseEntity.ok().body(reservationService.getAllReservations());
+        try {
+            ResponseDto createdReservation = reservationService.getAllReservations();
+            return new ResponseEntity<>(createdReservation, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/customer/{customerId}")

@@ -17,6 +17,7 @@ import edu.miu.cs.cs544.service.validation.ProductValidation;
 import edu.miu.cs.cs544.service.validation.ReservationValidation;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -156,6 +157,20 @@ public class ReservationService {
                 .success(true)
                 .message("Reservation cancelled successfully")
                 .data(reservationAdapter.entityToDTO(reservation))
+                .build();
+    }
+
+    public ResponseDto getReservationById(Integer id) {
+        Optional<Reservation> reservationOptional = reservationRepository.findById(id);
+        if (reservationOptional.isEmpty())
+            throw new IllegalArgumentException("Reservation does not exist");
+        customerValidation.checkAuthorization(reservationOptional.get().getCustomer());
+        Reservation reservation = reservationOptional.get();
+        ReservationDTO reservationDTO = reservationAdapter.entityToDTO(reservation);
+        return ResponseDto.builder()
+                .success(true)
+                .message("Reservation fetched successfully")
+                .data(reservationDTO)
                 .build();
     }
 }

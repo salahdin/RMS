@@ -1,8 +1,8 @@
-# Security enable/disable
 spring:
-  profiles:
-    active: test
-
-security:
-  basic:
-    enabled: false
+  datasource:
+    url: jdbc:h2:mem:mdb
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+  jpa:
+    spring.jpa.database-platform: org.hibernate.dialect.H2Dialect

@@ -3,12 +3,10 @@ package edu.miu.cs.cs544.service;
 import edu.miu.cs.cs544.adapter.ItemAdapter;
 import edu.miu.cs.cs544.adapter.ReservationAdapter;
 import edu.miu.cs.cs544.domain.Customer;
+import edu.miu.cs.cs544.domain.Item;
 import edu.miu.cs.cs544.domain.Reservation;
 import edu.miu.cs.cs544.domain.enums.ReservationState;
-import edu.miu.cs.cs544.dto.CustomerDTO;
-import edu.miu.cs.cs544.dto.ItemDTO;
-import edu.miu.cs.cs544.dto.ReservationDTO;
-import edu.miu.cs.cs544.dto.ResponseDto;
+import edu.miu.cs.cs544.dto.*;
 import edu.miu.cs.cs544.repository.CustomerRepository;
 import edu.miu.cs.cs544.repository.ItemRepository;
 import edu.miu.cs.cs544.repository.ProductRepository;
@@ -20,6 +18,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -89,26 +89,37 @@ class ReservationServiceTest {
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     void createReservation_validReservationDetails_reservationCreated() {
         // Arrange
-        CustomerDTO customer = new CustomerDTO();
+        Customer customer = new Customer();
         customer.setEmail("test@gmail.com");
 
-        ItemDTO itemDTO = new ItemDTO();
-        itemDTO.setOccupants(1);
-        itemDTO.setCheckinDate("2021-05-01");
-        itemDTO.setCheckoutDate("2021-05-02");
+        ProductDTO product = new ProductDTO();
+        product.setId(1);
+        product.setName("Test Product");
 
-        List<ItemDTO> items = List.of(itemDTO);
-        items.add(itemDTO);
+        ItemDTO item = new ItemDTO();
+        item.setOccupants(1);
+        item.setProduct(product);
+        item.setCheckinDate("2021-05-01");
+        item.setCheckoutDate("2021-05-02");
 
+        List<ItemDTO> items = new ArrayList<>();
+        items.add(item);
+
+
+        Reservation reservation = new Reservation();
+        reservation.setCustomer(customer);
+        //reservation.addItem(item);
 
         ReservationDTO reservationDTO = new ReservationDTO();
         reservationDTO.setCustomerEmail(customer.getEmail());
         reservationDTO.setItems(items);
 
 
-        //when(customerRepository.findCustomerByEmail(customer.getEmail())).thenReturn(Optional.of(customer));
-        //when(reservationAdapter.dtoToEntity(reservationDTO)).thenReturn(reservation);
-        //when(reservationRepository.save(reservation)).thenReturn(reservation);
+
+        when(customerRepository.findCustomerByEmail(customer.getEmail())).thenReturn(Optional.of(customer));
+        when(reservationAdapter.dtoToEntity(reservationDTO)).thenReturn(reservation);
+        when(reservationAdapter.entityToDTO(reservation)).thenReturn(reservationDTO);
+        when(reservationRepository.save(reservation)).thenReturn(reservation);
 
         // Act
         ResponseDto responseDto = reservationService.createReservation(reservationDTO);

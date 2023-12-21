@@ -5,6 +5,7 @@ import edu.miu.cs.cs544.domain.enums.ReservationState;
 import edu.miu.cs.cs544.dto.PaymentDTO;
 import edu.miu.cs.cs544.dto.ResponseDto;
 import edu.miu.cs.cs544.repository.ReservationRepository;
+import edu.miu.cs.cs544.service.validation.CustomerValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +17,12 @@ public class PaymentService {
     @Autowired
     private ReservationRepository reservationRepository;
 
+    @Autowired
+    private CustomerValidation customerValidation;
+
     public ResponseDto makePayment(PaymentDTO paymentDTO) {
         Reservation reservation = getReservation(paymentDTO.getReservationId());
+        customerValidation.checkAuthorization(reservation.getCustomer());
         checkReservationState(reservation);
         validatePayment(paymentDTO, reservation);
         processPayment(reservation);
