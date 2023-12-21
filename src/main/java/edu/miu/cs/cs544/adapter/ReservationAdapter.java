@@ -15,9 +15,6 @@ import java.util.Optional;
 public class ReservationAdapter {
 
     @Autowired
-    private CustomerAdapter customerAdapter;
-
-    @Autowired
     private CustomerRepository customerRepository;
 
     @Autowired
