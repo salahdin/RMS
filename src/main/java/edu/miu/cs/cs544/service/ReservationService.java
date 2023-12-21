@@ -145,6 +145,7 @@ public class ReservationService {
     }
 
 
+    @Transactional
     public ResponseDto cancelReservation(Integer id) {
         Optional<Reservation> reservationOptional = reservationRepository.findById(id);
 

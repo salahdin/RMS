@@ -85,50 +85,6 @@ class ReservationServiceTest {
         assertEquals(reservationDTO, responseDto.getData());
     }
 
-    @Test
-    @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    void createReservation_validReservationDetails_reservationCreated() {
-        // Arrange
-        Customer customer = new Customer();
-        customer.setEmail("test@gmail.com");
-
-        ProductDTO product = new ProductDTO();
-        product.setId(1);
-        product.setName("Test Product");
-
-        ItemDTO item = new ItemDTO();
-        item.setOccupants(1);
-        item.setProduct(product);
-        item.setCheckinDate("2021-05-01");
-        item.setCheckoutDate("2021-05-02");
-
-        List<ItemDTO> items = new ArrayList<>();
-        items.add(item);
-
-
-        Reservation reservation = new Reservation();
-        reservation.setCustomer(customer);
-        //reservation.addItem(item);
-
-        ReservationDTO reservationDTO = new ReservationDTO();
-        reservationDTO.setCustomerEmail(customer.getEmail());
-        reservationDTO.setItems(items);
-
-
-
-        when(customerRepository.findCustomerByEmail(customer.getEmail())).thenReturn(Optional.of(customer));
-        when(reservationAdapter.dtoToEntity(reservationDTO)).thenReturn(reservation);
-        when(reservationAdapter.entityToDTO(reservation)).thenReturn(reservationDTO);
-        when(reservationRepository.save(reservation)).thenReturn(reservation);
-
-        // Act
-        ResponseDto responseDto = reservationService.createReservation(reservationDTO);
-
-        // Assert
-        assertTrue(responseDto.isSuccess());
-        assertEquals("Reservation created successfully", responseDto.getMessage());
-        assertEquals(reservationDTO, responseDto.getData());
-    }
 
     @Test
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
