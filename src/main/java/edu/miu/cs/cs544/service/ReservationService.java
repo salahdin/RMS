@@ -82,6 +82,15 @@ public class ReservationService {
                 .build();
     }
 
+    public ResponseDto getAllReservationsByCustomerId(Integer customerId) {
+        List<ReservationDTO> reservations = reservationAdapter.entityToDTOAll(reservationRepository.findAllByCustomerId(customerId));
+        return ResponseDto.builder()
+                .success(true)
+                .message("Reservations fetched successfully")
+                .data(reservations)
+                .build();
+    }
+
     @Transactional
     public ResponseDto createReservation(ReservationDTO reservationDTO) {
         Customer customer = customerValidation.validateCustomer(reservationDTO.getCustomerEmail());
@@ -139,16 +148,17 @@ public class ReservationService {
     public ResponseDto cancelReservation(Integer id) {
         Optional<Reservation> reservationOptional = reservationRepository.findById(id);
 
-        if(reservationOptional.isEmpty())
+        if (reservationOptional.isEmpty())
             throw new IllegalArgumentException("Reservation does not exist");
 
         Reservation reservation = reservationOptional.get();
-        reservation.getItems().forEach(item ->{
-            if(item.getCheckinDate().minusDays(7).isBefore(LocalDate.now()))
-                throw new IllegalArgumentException("Reservation cannot be cancelled");
-        });
 
         customerValidation.checkAuthorization(reservation.getCustomer());
+
+        reservation.getItems().forEach(item -> {
+            if (item.getCheckinDate().minusDays(7).isBefore(LocalDate.now()))
+                throw new IllegalArgumentException("Reservation cannot be cancelled");
+        });
 
         reservation.setReservationState(ReservationState.CANCELLED);
         reservationRepository.save(reservation);

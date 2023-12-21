@@ -45,7 +45,12 @@ public class ReservationController {
 
     @GetMapping("/customer/{customerId}")
     public ResponseEntity<?> getAllReservationsByCustomerId(@PathVariable Integer customerId) {
-        return ResponseEntity.ok().body(reservationRepository.findAllByCustomerId(customerId));
+        try {
+            ResponseDto createdReservation = reservationService.getAllReservationsByCustomerId(customerId);
+            return new ResponseEntity<>(createdReservation, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping()

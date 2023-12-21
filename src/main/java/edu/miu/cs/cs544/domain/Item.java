@@ -25,7 +25,7 @@ public class Item {
 	@ManyToOne
 	private Reservation reservation;
 
-	@OneToOne
+	@ManyToOne
 	private Product product;
 
 	@Embedded
