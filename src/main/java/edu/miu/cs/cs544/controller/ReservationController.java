@@ -3,7 +3,6 @@ package edu.miu.cs.cs544.controller;
 
 import edu.miu.cs.cs544.dto.ReservationDTO;
 import edu.miu.cs.cs544.dto.ResponseDto;
-import edu.miu.cs.cs544.repository.ReservationRepository;
 import edu.miu.cs.cs544.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,8 +14,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/reservations")
 public class ReservationController {
 
-    @Autowired
-    private ReservationRepository reservationRepository;
 
     @Autowired
     private ReservationService reservationService;
@@ -57,7 +54,7 @@ public class ReservationController {
     public ResponseEntity<?> createReservation(@RequestBody ReservationDTO reservationDTO) {
         try {
             ResponseDto createdReservation = reservationService.createReservation(reservationDTO);
-            return new ResponseEntity<>(createdReservation, HttpStatus.CREATED);
+            return new ResponseEntity<>(createdReservation, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
